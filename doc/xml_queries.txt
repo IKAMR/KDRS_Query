@@ -1,0 +1,353 @@
+[XML_QUERY]
+
+job_id=C.01 
+job_enabled=1 
+job_name=Analyse_count_archives- Antall arkiv
+job_description=
+
+system=noark5 
+subsystem= 
+source= 
+target=noark5_analyse_{dt}.log
+
+#START#
+count(/a:arkiv)
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.02
+job_enabled=1 
+job_name=Antall arkivdel 
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+count(//a:arkivdel)
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.04
+job_enabled=1 
+job_name=Arkivdelen(e)s status i arkivstrukturen
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+concat('Arkivdel "' , a:tittel , '": "', descendant::a:arkivdelstatus, '"')
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.05
+job_enabled=1 
+job_name=Antall klassifikasjonssystemer i arkivstrukturen
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+concat('Arkivdel "', descendant::a:tittel, '": ', count(descendant::a:klassifikasjonssystem))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.06
+job_enabled=1 
+job_name=Antall klasser i arkivstrukturen
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+concat('Arkivdel "' , a:tittel, '": ', count(descendant::a:klasse), '\r\n' ,
+		'level 1: ', count(descendant::a:klasse) - count(descendant::a:klasse/a:klasse), '\r\n' ,
+		'level 2: ', count(descendant::a:klasse/a:klasse) - count(descendant::a:klasse/a:klasse/a:klasse), '\r\n',
+		'level 3: ', count(descendant::a:klasse/a:klasse/a:klasse))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.07
+job_enabled=1 
+job_name=Antall klasser uten underklasser, mapper eller registreringer i det primære klassifikasjonssystemet i arkivstrukturen
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+concat('"', descendant::a:systemID, '": ', count(descendant::a:klasse[not (a:klasse or a:mappe or a:registrering)]))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.08
+job_enabled=1 
+job_name= Antall mapper i arkivstrukturen
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+concat('Arkivdel "' , a:tittel, '": ', '\r\n', 
+	'Antall saksmapper: ', count(descendant::a:mappe[@xsi:type='saksmappe']),'\r\n', 
+	'Antall møtemapper: ', count(descendant::a:mappe[@xsi:type='moetemappe']), '\r\n',
+    'Antall mapper uten spesialisering: ', count(descendant::a:mappe[count(@*)=0]), '\r\n',
+	'Totalt: ', count(descendant::a:mappe))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.10
+job_enabled=1 
+job_name= Antall klasser med både mapper og underklasser
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+concat('Arkivdel "' , a:tittel , '": ', count(descendant::a:klasse[a:klasse]/a:mappe))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.11
+job_enabled=1 
+job_name= Antall mapper i hver klasse
+job_description=Antall mapper som er klassifisert med hver enkelt klasse i arkivstrukturen
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+concat('Klasse "', //a:klasse[a:mappe]/a:klasseID, '": ' , count(//a:klasse[a:mappe]/a:mappe))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.12
+job_enabled=1 
+job_name= Antall mapper uten undermapper eller registreringer
+job_description= Antall mapper uten undermapper eller registreringer i arkivstrukturen
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '": ', '\r\n', 
+	'Antall mapper uten registreringer: ', count(descendant::a:mappe[not (a:mappe or a:registrering)]))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.13
+job_enabled=1 
+job_name= Mappenes status i arkivstrukturen
+job_description= Mappenes status i arkivstrukturen
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '":', '\r\n',
+	'Antall mapper med status "Under behandling": ', count(descendant::a:mappe[a:sakstatus='Underbehandling']), '\r\n',
+	'Antall mapper med status "Avsluttet": ', count(descendant::a:mappe[a:saksstatus='Avsluttet']), '\r\n',
+	'Antall mapper med status "Utgår": ', count(descendant::a:mappe[a:saksstatus='Utgår']), '\r\n',
+	'Totalt: ', count(descendant::a:mappe), '\r\n', '\r\n',
+	'Antall avsluttede møtemapper: ', count(descendant::a:mappe[@xsi:type='moetemappe'][string-length (a:avsluttetDato/text()) > 0]), '\r\n',
+	'Antall møtemapper totalt: ', count(descendant::a:mappe[@xsi:type='moetemappe']))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.14
+job_enabled=1 
+job_name= Antall registreringer i arkivstrukturen
+job_description= 
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '":', '\r\n',
+	'Antall forenklede registreringer: ', count(descendant::a:registrering[@xsi:type='registrering']), '\r\n',
+	'Antall basisregistreringer: ', count(descendant::a:registrering[@xsi:type='basisregistrering']), '\r\n',
+	'Antall journalposter: ', count(descendant::a:registrering[@xsi:type='journalpost']), '\r\n',
+	'Antall møteregistreringer: ', count(descendant::a:registrering[@xsi:type='moeteregistrering']), '\r\n', 
+	'Totalt: ', count(descendant::a:registrering))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.15
+job_enabled=1 
+job_name= Journalposttyper og journalposttilknytning
+job_description= Journalposttyper og journalposttilknytning i arkivstrukturen (sakarkiver)
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '":', '\r\n',
+	'Antall inngående dokumenter: ', count(descendant::a:registrering[a:journalposttype='Inngående dokument']), '\r\n',
+	'Antall utgående dokumenter: ', count(descendant::a:registrering[a:journalposttype='Utgående dokument']), '\r\n',
+	'Antall organinterne dokumenter for oppfølging: ', count(descendant::a:registrering[a:journalposttype='Organinternt dokument for oppfølging']), '\r\n',
+	'Antall organinterne dokumenter uten oppfølging: ', count(descendant::a:registrering[a:journalposttype='Organinternt dokument uten oppfølging']), '\r\n', 
+	'Antall saksfremlegg: ', count(descendant::a:registrering[a:journalposttype='Saksframlegg']), '\r\n', '\r\n',
+	'Antall journalposter med hoveddokument: ', count(descendant::a:registrering/a:dokumentbeskrivelse[a:tilknyttetRegistreringSom='Hoveddokument']), '\r\n',
+	'Antall journalposter uten hoveddokument: ', count(descendant::a:registrering[not(a:dokumentbeskrivelse/a:tilknyttetRegistreringSom='Hoveddokument')]))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.19
+job_enabled=1 
+job_name= Antall registreringer uten dokumentbeskrivelse i arkivstrukturen
+job_description= 
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '":', '\r\n',
+	'Registreringer uten dokumentbeskrivelse: ', count(descendant::a:registrering[not (a:dokumentbeskrivelse)]/a:registreringsID))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.20
+job_enabled=1 
+job_name= Journalpostenes status
+job_description= 
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '":', '\r\n',
+	'Antall med status "Arkivert": ', count(descendant::a:registrering[a:journalstatus='Arkivert']), '\r\n',
+	'Antall med status "Utgår": ', count(descendant::a:registrering[a:journalstatus='Utgår']), '\r\n',
+	'Antall med status "Journalført": ', count(descendant::a:registrering[a:journalstatus='Journalført']), '\r\n',
+	'Antall med annen status: ', count(descendant::a:registrering[not(a:journalstatus='Arkivert')][not(a:journalstatus='Utgår')][not(a:journalstatus='Journalført')]))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.21
+job_enabled=1 
+job_name= Antall dokumentbeskrivelser
+job_description= 
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '":', '\r\n', 'Antall dokumentbeskrivelser: ', count(descendant::a:dokumentbeskrivelse))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.22
+job_enabled=1 
+job_name= Antall dokumentbeskrivelser uten dokumentobjekt
+job_description= 
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '":', '\r\n', 'Antall dokumentbeskrivelser uten dokumentobjekt: ', count(descendant::a:dokumentbeskrivelse[not(a:dokumentobjekt)]))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.23
+job_enabled=1 
+job_name= Dokumentbeskrivelsens status
+job_description= 
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '":', '\r\n',
+	'Antall med status "Dokumentet er ferdigstilt": ', count(descendant::a:dokumentbeskrivelse[a:dokumentstatus='Dokumentet er ferdigstilt']), '\r\n',
+	'Antall med status "Dokumentet er under redigering": ', count(descendant::a:dokumentbeskrivelse[a:dokumentstatus='Dokumentet er under redigering']), '\r\n',
+	'Antall med annen status: ', count(descendant::a:dokumentbeskrivelse[not(a:dokumentstatus='Dokumentet er ferdigstilt')][not(a:dokumentstatus='Dokumentet er under redigering')]))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.24
+job_enabled=1 
+job_name= Antall forekomster av dokumentobjekt
+job_description= 
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '": ', '\r\n', 'Antall dokumentobjekt: ', count(descendant::a:dokumentobjekt))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C.25
+job_enabled=1 
+job_name= Antall forekomster av dokumentobjekt
+job_description= 
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('Arkivdel "' , a:tittel , '": ', '\r\n', 'Antall dokumentobjekt: ', count(descendant::a:dokumentobjekt))
+#STOP#
