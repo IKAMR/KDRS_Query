@@ -72,23 +72,29 @@
             // 
             // txtInFile
             // 
+            this.txtInFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtInFile.Location = new System.Drawing.Point(163, 35);
             this.txtInFile.Name = "txtInFile";
-            this.txtInFile.Size = new System.Drawing.Size(548, 20);
+            this.txtInFile.Size = new System.Drawing.Size(531, 20);
             this.txtInFile.TabIndex = 1;
             // 
             // txtQFile
             // 
+            this.txtQFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtQFile.Location = new System.Drawing.Point(163, 93);
             this.txtQFile.Name = "txtQFile";
-            this.txtQFile.Size = new System.Drawing.Size(548, 20);
+            this.txtQFile.Size = new System.Drawing.Size(531, 20);
             this.txtQFile.TabIndex = 5;
             // 
             // txtTrgtPath
             // 
+            this.txtTrgtPath.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtTrgtPath.Location = new System.Drawing.Point(163, 64);
             this.txtTrgtPath.Name = "txtTrgtPath";
-            this.txtTrgtPath.Size = new System.Drawing.Size(548, 20);
+            this.txtTrgtPath.Size = new System.Drawing.Size(531, 20);
             this.txtTrgtPath.TabIndex = 3;
             // 
             // btnQFile
@@ -103,12 +109,15 @@
             // 
             // txtLogbox
             // 
+            this.txtLogbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLogbox.Location = new System.Drawing.Point(12, 201);
             this.txtLogbox.Multiline = true;
             this.txtLogbox.Name = "txtLogbox";
             this.txtLogbox.ReadOnly = true;
             this.txtLogbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLogbox.Size = new System.Drawing.Size(699, 148);
+            this.txtLogbox.Size = new System.Drawing.Size(682, 148);
             this.txtLogbox.TabIndex = 7;
             this.txtLogbox.TabStop = false;
             // 
@@ -120,7 +129,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(706, 450);
             this.Controls.Add(this.txtLogbox);
             this.Controls.Add(this.btnQFile);
             this.Controls.Add(this.txtTrgtPath);

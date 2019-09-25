@@ -21,6 +21,7 @@ namespace KDRS_Query
         public Form1()
         {
             InitializeComponent();
+            Text = Globals.toolName + " " + Globals.toolVersion;
         }
 
 
@@ -105,14 +106,14 @@ namespace KDRS_Query
             txtLogbox.Text = "Running queries";
             string inFile = txtInFile.Text;
             string targetFolder = txtTrgtPath.Text;
-           // string queryFile = txtQFile.Text;
-            string queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\test.txt";
+             string queryFile = txtQFile.Text;
+            //string queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\test.txt";
             Console.WriteLine("Reading queries from: " + inFile);
 
             GetQuery(queryFile);
 
-            //string outFile = Path.Combine(targetFolder, "results.txt");
-            string outFile = @"Y:\arkiv-test\sip\documaster\sample-extraction\2016-09-27_11-22-42-000333\uttrekk\results.txt";
+            string outFile = Path.Combine(targetFolder, "results.txt");
+            //string outFile = @"Y:\arkiv-test\sip\documaster\sample-extraction\2016-09-27_11-22-42-000333\uttrekk\results.txt";
 
             //File.Create(outFile);
             xPRunner.RunXPath(queryList, inFile);
@@ -172,6 +173,12 @@ namespace KDRS_Query
         }
 
 
+    }
+
+    public static class Globals
+    {
+        public static readonly String toolName = "KDRS Query";
+        public static readonly String toolVersion = "0.1";
     }
 
     public enum ClassType { XML_Query, SQL_Query }

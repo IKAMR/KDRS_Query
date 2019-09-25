@@ -30,7 +30,20 @@ namespace KDRS_Query
             nsmgr.AddNamespace("a", "http://www.arkivverket.no/standarder/noark5/arkivstruktur");
             nsmgr.AddNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
             //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+            foreach (XML_Query q in Xqueries)
+            {
+                Console.WriteLine("Query: " + q.JobName);
+                nodes = nav.Select("//a:arkivdel", nsmgr);
+                XPathExpression xPathEx = nav.Compile(q.Query);
+                xPathEx.SetContext(nsmgr);
 
+                while (nodes.MoveNext())
+                    q.Result = nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n");
+            }
+
+
+
+            /*
             // C1.  Antall arkiver i arkivstrukturen
             results.Add("C1");
             XPathExpression query = nav.Compile("count(/a:arkiv)");
@@ -58,18 +71,9 @@ namespace KDRS_Query
                 results.Add(nav.Evaluate(arkivdelTittel, nodes).ToString());
             results.Add("-------------------------------------------------");
             //-------------------------------------------------
+            */
 
-            foreach (XML_Query q in Xqueries)
-            {
-                Console.WriteLine("Query: " + q.JobName);
-                nodes = nav.Select("//a:arkivdel", nsmgr);
-                XPathExpression xPathEx = nav.Compile(q.Query);
-                xPathEx.SetContext(nsmgr);
 
-                while (nodes.MoveNext())
-                    q.Result = nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n");
-            }
-         
 
         }
     }
