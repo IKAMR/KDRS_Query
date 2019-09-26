@@ -46,7 +46,6 @@ namespace KDRS_Query
                         {
                             case "XML_QUERY":
                                 //Call fill xml_query
-                                //make xml
                                 break;
                         }
                         XML_Query query = new XML_Query();
