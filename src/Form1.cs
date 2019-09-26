@@ -41,6 +41,13 @@ namespace KDRS_Query
                     if (line.StartsWith("["))
                     {
                         string qType = line.Split('[', ']')[1];
+
+                        switch (qType)
+                        {
+                            case "XML_QUERY":
+                                //Call fill xml_query
+                                break;
+                        }
                         XML_Query query = new XML_Query();
 
                         queryList.Add(query);
