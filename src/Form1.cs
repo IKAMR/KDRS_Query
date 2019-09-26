@@ -15,6 +15,7 @@ namespace KDRS_Query
     {
 
         List<QueryClass> queryList = new List<QueryClass>();
+        List<string> queryInfo = new List<string>();
 
         XPathQueryRunner xPRunner = new XPathQueryRunner();
 
@@ -42,16 +43,41 @@ namespace KDRS_Query
                     {
                         string qType = line.Split('[', ']')[1];
 
+                        
+
+                        string qStart = @"#START#";
+                        string qStop = @"#STOP#";
+                        string queryText = "";
+                        while ((line = reader.ReadLine().Trim()) != null)
+                        {
+
+                            queryInfo.Add(line);
+                            }
+                            if (line.Equals(qStart))
+                            {
+                                Console.WriteLine("START found");
+
+                                while (!(line = reader.ReadLine()).Equals(qStop))
+                                {
+                                    queryText += "\r\n" + line;
+                                }
+                            queryInfo.Add(queryText);
+                                break;
+                            }
                         switch (qType)
                         {
                             case "XML_QUERY":
                                 //Call fill xml_query
                                 break;
                         }
+                    }
+
+
+                        
                         XML_Query query = new XML_Query();
 
                         queryList.Add(query);
-
+                        /*
                         string qStart = @"#START#";
                         string qStop = @"#STOP#";
                         string queryText = "";
@@ -98,13 +124,22 @@ namespace KDRS_Query
                                 break;
                             }
                         }
-                    }
+                    }*/
                 }
 
 
             }
             Console.WriteLine("ALL queries read");
+
+            foreach (string s in queryInfo)
+                Console.WriteLine(s);
+
             return "";
+
+        }
+
+        public void MakeXMLQuery(List<string> queryList)
+        {
 
         }
 
@@ -113,14 +148,14 @@ namespace KDRS_Query
             txtLogbox.Text = "Running queries";
             string inFile = txtInFile.Text;
             string targetFolder = txtTrgtPath.Text;
-             string queryFile = txtQFile.Text;
-            //string queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\test.txt";
+             //string queryFile = txtQFile.Text;
+            string queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\xml_queries.txt";
             Console.WriteLine("Reading queries from: " + inFile);
 
             GetQuery(queryFile);
 
-            string outFile = Path.Combine(targetFolder, "results.txt");
-            //string outFile = @"Y:\arkiv-test\sip\documaster\sample-extraction\2016-09-27_11-22-42-000333\uttrekk\results.txt";
+            //string outFile = Path.Combine(targetFolder, "results.txt");
+            string outFile = @"Y:\arkiv-test\sip\documaster\sample-extraction\2016-09-27_11-22-42-000333\uttrekk\results.txt";
 
             //File.Create(outFile);
             xPRunner.RunXPath(queryList, inFile);
