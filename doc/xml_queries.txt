@@ -351,3 +351,24 @@ target=noark5_analyse_{dt}.log
 #START#
 concat('Arkivdel "' , a:tittel , '": ', '\r\n', 'Antall dokumentobjekt: ', count(descendant::a:dokumentobjekt))
 #STOP#
+
+[SQL_QUERY]
+
+job_id=ESA01 
+job_enabled=1 
+job_name=Antall saker per arkivdel 
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+server=localhost 
+database=saksarkiv 
+user=depot 
+psw=test
+
+#START# 
+select fysark, count(*) from DGSMSA group by fysark; 
+#STOP#

@@ -42,8 +42,9 @@ namespace KDRS_Query
                     if (line.StartsWith("["))
                     {
                         string qType = line.Split('[', ']')[1];
+                        Console.WriteLine(qType);
 
-                        
+
 
                         string qStart = @"#START#";
                         string qStop = @"#STOP#";
@@ -52,7 +53,7 @@ namespace KDRS_Query
                         {
 
                             queryInfo.Add(line);
-                            }
+
                             if (line.Equals(qStart))
                             {
                                 Console.WriteLine("START found");
@@ -61,74 +62,17 @@ namespace KDRS_Query
                                 {
                                     queryText += "\r\n" + line;
                                 }
-                            queryInfo.Add(queryText);
+                                queryInfo.Add(queryText);
+                                CreateQuery(qType, queryInfo);
+                                queryInfo.Clear();
                                 break;
                             }
-                        switch (qType)
-                        {
-                            case "XML_QUERY":
-                                //Call fill xml_query
-                                break;
+
                         }
                     }
-
-
-                        
-                        XML_Query query = new XML_Query();
-
-                        queryList.Add(query);
-                        /*
-                        string qStart = @"#START#";
-                        string qStop = @"#STOP#";
-                        string queryText = "";
-                        while ((line = reader.ReadLine().Trim()) != null)
-                        {
-
-                            string[] items = line.Split('=');
-                            switch (items[0])
-                            {
-                                case "job_id":
-                                    query.JobId = items[1];
-                                    break;
-                                case "job_enabled":
-                                    query.JobEnabled = Int32.Parse(items[1]);
-                                    break;
-                                case "job_name":
-                                    query.JobName = items[1];
-                                    break;
-                                case "job_description":
-                                    query.JobDescription = items[1];
-                                    break;
-                                case "system":
-                                    query.System = items[1];
-                                    break;
-                                case "subsystem":
-                                    query.SubSystem = items[1];
-                                    break;
-                                case "source":
-                                    query.Source = items[1];
-                                    break;
-                                case "target":
-                                    query.Target = items[1];
-                                    break;
-                            }
-                            if (line.Equals(qStart))
-                            {
-                                Console.WriteLine("START found");
-
-                                while (!(line = reader.ReadLine()).Equals(qStop))
-                                {
-                                    queryText += "\r\n" + line;
-                                }
-                                query.Query = queryText;
-                                break;
-                            }
-                        }
-                    }*/
                 }
-
-
             }
+
             Console.WriteLine("ALL queries read");
 
             foreach (string s in queryInfo)
@@ -138,9 +82,57 @@ namespace KDRS_Query
 
         }
 
-        public void MakeXMLQuery(List<string> queryList)
+        public void CreateQuery(string qType, List<string> queryInfoList)
         {
+            switch (qType)
+            {
+                case "XML_QUERY":
+                    MakeXMLQuery(queryInfoList);
+                    break;
+                case "SQL_QUERY":
+                    MakeSQLQuery(queryInfoList);
+                    break;
+            }
+        }
 
+        private void MakeSQLQuery(List<string> queryInfoList)
+        {
+            SQL_Query sqlQuery = new SQL_Query();
+
+           // queryList.Add(sqlQuery);
+            sqlQuery.JobId = queryInfoList[1].Split('=')[1];
+            sqlQuery.JobEnabled = queryInfoList[2].Split('=')[1];
+            sqlQuery.JobName = queryInfoList[3].Split('=')[1].Trim();
+            sqlQuery.JobDescription = queryInfoList[4].Split('=')[1].Trim();
+            sqlQuery.System = queryInfoList[6].Split('=')[1];
+            sqlQuery.SubSystem = queryInfoList[7].Split('=')[1];
+            sqlQuery.Source = queryInfoList[8].Split('=')[1];
+            sqlQuery.Target = queryInfoList[9].Split('=')[1];
+
+            sqlQuery.Server = queryInfoList[11].Split('=')[1];
+            sqlQuery.Database = queryInfoList[12].Split('=')[1];
+            sqlQuery.User = queryInfoList[13].Split('=')[1];
+            sqlQuery.Psw = queryInfoList[14].Split('=')[1];
+            sqlQuery.Query = queryInfoList[17];
+
+            
+        }
+
+
+        public void MakeXMLQuery(List<string> queryInfoList)
+        {
+            XML_Query query = new XML_Query();
+
+            queryList.Add(query);
+            query.JobId = queryInfoList[1].Split('=')[1];
+            query.JobEnabled = queryInfoList[2].Split('=')[1];
+            query.JobName = queryInfoList[3].Split('=')[1].Trim();
+            query.JobDescription = queryInfoList[4].Split('=')[1].Trim();
+            query.System = queryInfoList[6].Split('=')[1];
+            query.SubSystem = queryInfoList[7].Split('=')[1];
+            query.Source = queryInfoList[8].Split('=')[1];
+            query.Target = queryInfoList[9].Split('=')[1];
+            query.Query = queryInfoList[12];
         }
 
         private void btnRunQ_Click(object sender, EventArgs e)
@@ -170,7 +162,7 @@ namespace KDRS_Query
                     txtLogbox.AppendText("\r\n" + query.JobId);
 
                     w.WriteLine(query.JobId);
-                    w.WriteLine(query.JobEnabled.ToString());
+                    w.WriteLine(query.JobEnabled);
                     w.WriteLine(query.JobName);
                     w.WriteLine(query.JobDescription);
                     w.WriteLine(query.System);
@@ -184,8 +176,8 @@ namespace KDRS_Query
                     w.WriteLine("=================================");
 
 
-                    Console.WriteLine(query.JobId);
-                    Console.WriteLine(query.Query);
+                   // Console.WriteLine(query.JobId);
+                   // Console.WriteLine(query.Query);
                 }
             }
             txtLogbox.AppendText("\r\nJob complete.");
@@ -227,6 +219,18 @@ namespace KDRS_Query
 
     public class QueryClass
     {
+
+        public string JobId { get; set; }
+        public string JobEnabled { get; set; }
+        public string JobName { get; set; }
+        public string JobDescription { get; set; }
+        public string System { get; set; }
+        public string SubSystem { get; set; }
+        public string Source { get; set; }
+        public string Target { get; set; }
+        public string Query { get; set; }
+        public string Result { get; set; }
+
         public static QueryClass Create(ClassType classType)
         {
             switch (classType)
@@ -241,31 +245,14 @@ namespace KDRS_Query
 
     public class XML_Query : QueryClass
     {
-        public string JobId { get; set; }
-        public int JobEnabled { get; set; }
-        public string JobName { get; set; }
-        public string JobDescription { get; set; }
-        public string System { get; set; }
-        public string SubSystem { get; set; }
-        public string Source { get; set; }
-        public string Target { get; set; }
-        public string Query { get; set; }
-        public string Result { get; set; }
+
     }
     public class SQL_Query : QueryClass
     {
-        public string JobId { get; set; }
-        public int JobEnabled { get; set; }
-        public string JobName { get; set; }
-        public string JobDescription { get; set; }
-        public string System { get; set; }
-        public string SubSystem { get; set; }
-        public string Source { get; set; }
-        public string Target { get; set; }
         public string Server { get; set; }
         public string Database { get; set; }
         public string User { get; set; }
         public string Psw { get; set; }
-        public string Query { get; set; }
+
     }
 }
