@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
+using System.Linq; 
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,9 +15,12 @@ namespace KDRS_Query
     {
 
         List<QueryClass> queryList = new List<QueryClass>();
+        List<SQL_Query> sqlQueryList = new List<SQL_Query>();
+
         List<string> queryInfo = new List<string>();
 
         XPathQueryRunner xPRunner = new XPathQueryRunner();
+        MYSQL_Runner sqlRunner = new MYSQL_Runner();
 
         public Form1()
         {
@@ -43,8 +46,6 @@ namespace KDRS_Query
                     {
                         string qType = line.Split('[', ']')[1];
                         Console.WriteLine(qType);
-
-
 
                         string qStart = @"#START#";
                         string qStop = @"#STOP#";
@@ -99,7 +100,7 @@ namespace KDRS_Query
         {
             SQL_Query sqlQuery = new SQL_Query();
 
-           // queryList.Add(sqlQuery);
+            sqlQueryList.Add(sqlQuery);
             sqlQuery.JobId = queryInfoList[1].Split('=')[1];
             sqlQuery.JobEnabled = queryInfoList[2].Split('=')[1];
             sqlQuery.JobName = queryInfoList[3].Split('=')[1].Trim();
@@ -151,6 +152,8 @@ namespace KDRS_Query
 
             //File.Create(outFile);
             xPRunner.RunXPath(queryList, inFile);
+            sqlRunner.RunSQL(sqlQueryList[0]);
+
 
             using (File.Create(outFile)) { }
 
@@ -179,6 +182,35 @@ namespace KDRS_Query
                    // Console.WriteLine(query.JobId);
                    // Console.WriteLine(query.Query);
                 }
+
+                foreach (SQL_Query sqlQuery in sqlQueryList)
+                {
+                    txtLogbox.AppendText("\r\n" + sqlQuery.JobId);
+
+                    w.WriteLine(sqlQuery.JobId);
+                    w.WriteLine(sqlQuery.JobEnabled);
+                    w.WriteLine(sqlQuery.JobName);
+                    w.WriteLine(sqlQuery.JobDescription);
+                    w.WriteLine(sqlQuery.System);
+                    w.WriteLine(sqlQuery.SubSystem);
+                    w.WriteLine(sqlQuery.Source);
+                    w.WriteLine(sqlQuery.Target);
+                    w.WriteLine(sqlQuery.Server);
+                    w.WriteLine(sqlQuery.Database);
+                    w.WriteLine(sqlQuery.User);
+                    w.WriteLine(sqlQuery.Psw);
+                    w.WriteLine(sqlQuery.Query);
+                    w.WriteLine("");
+                    w.WriteLine("Query result:");
+                    w.WriteLine(sqlQuery.Result);
+                    w.WriteLine("=================================");
+
+
+                    // Console.WriteLine(query.JobId);
+                    // Console.WriteLine(query.Query);
+                }
+
+
             }
             txtLogbox.AppendText("\r\nJob complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);

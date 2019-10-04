@@ -364,11 +364,11 @@ subsystem=
 source=arkivstruktur.xml 
 target=noark5_analyse_{dt}.log
 
-server=localhost 
-database=saksarkiv 
-user=depot 
+server=127.0.0.1 
+database=t01testdb04 
+user=t01testdb04u 
 psw=test
 
 #START# 
-select fysark, count(*) from DGSMSA group by fysark; 
+select count(*) from arkiv; 
 #STOP#
