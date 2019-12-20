@@ -151,10 +151,10 @@ namespace KDRS_Query
             string outFile = @"Y:\arkiv-test\sip\documaster\sample-extraction\2016-09-27_11-22-42-000333\uttrekk\results.txt";
 
             //File.Create(outFile);
-            xPRunner.RunXPath(queryList, inFile);
-            sqlRunner.RunSQL(sqlQueryList[0]);
+            //xPRunner.RunXPath(queryList, inFile);
+            //sqlRunner.RunSQL(sqlQueryList[0]);
 
-
+            /*
             using (File.Create(outFile)) { }
 
             using (StreamWriter w = File.AppendText(outFile))
@@ -211,7 +211,11 @@ namespace KDRS_Query
                 }
 
 
-            }
+            }*/
+            WordWriter writer = new WordWriter();
+
+            writer.WriteToDoc(@"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.1.2_2018-11-30.docx");
+
             txtLogbox.AppendText("\r\nJob complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
 
