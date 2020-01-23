@@ -45,6 +45,7 @@ namespace KDRS_Query
             }
         }
 
+        // Runs XPath from Xqueries on file spesified in query. Either 'arkivstruktur.xml, loependeJournal.xml, offentligJournal.xml or endringslogg.xml.
         public void RunXpath2(List<QueryClass> Xqueries, string sourceFolder)
         {
             foreach (XML_Query q in Xqueries)
@@ -65,8 +66,6 @@ namespace KDRS_Query
                     nav = docNav.CreateNavigator();
 
                     XmlNamespaceManager nsmgr = new XmlNamespaceManager(nav.NameTable);
-                    // var nameSpace = nav.GetNamespace(nav.SelectSingleNode("arkiv").NamespaceURI);
-                    //nsmgr.AddNamespace("a", nameSpace);
                     if (q.Source.Equals("arkivstruktur.xml"))
                     {
                         nsmgr.AddNamespace("a", "http://www.arkivverket.no/standarder/noark5/arkivstruktur");

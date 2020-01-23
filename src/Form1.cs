@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.IO;
-using System.Linq; 
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace KDRS_Query
@@ -30,6 +25,7 @@ namespace KDRS_Query
             Text = Globals.toolName + " " + Globals.toolVersion;
         }
 
+        // Extracts all query information from query text file into query list
         private string GetQuery(string filename)
         {
             Console.WriteLine("Reading queries");
@@ -74,7 +70,7 @@ namespace KDRS_Query
                 }
             }
 
-            Console.WriteLine("ALL queries read");
+            Console.WriteLine("All queries read");
 
             foreach (string s in queryInfo)
                 Console.WriteLine(s);
@@ -95,6 +91,7 @@ namespace KDRS_Query
             }
         }
 
+        // Reads SQL queries from queryInfoList into SQL_Query object.
         private void MakeSQLQuery(List<string> queryInfoList)
         {
             SQL_Query sqlQuery = new SQL_Query();
@@ -116,7 +113,7 @@ namespace KDRS_Query
             sqlQuery.Query = queryInfoList[17];
         }
 
-
+        // Reads XPath queries from queryInfoList into XML_Query object.
         public void MakeXMLQuery(List<string> queryInfoList)
         {
             XML_Query query = new XML_Query();
@@ -149,15 +146,15 @@ namespace KDRS_Query
             GetQuery(queryFile);
 
             string outFile = Path.Combine(targetFolder, "kdrs_query_results.txt");
-            //string outFile = @"Y:\arkiv-test\sip\documaster\sample-extraction\2016-09-27_11-22-42-000333\uttrekk\results.txt";
 
-            //File.Create(outFile);
             xPRunner.RunXpath2(queryList, inFile);
+            
+            
             //sqlRunner.RunSQL(sqlQueryList[0]);
-
             
             using (File.Create(outFile)) { }
 
+            // Creating text file containing all query info including query results
             using (StreamWriter w = File.AppendText(outFile))
             {
 
@@ -181,9 +178,6 @@ namespace KDRS_Query
                         w.WriteLine(query.Result);
                         w.WriteLine("=================================");
                     }
-
-                   // Console.WriteLine(query.JobId);
-                   // Console.WriteLine(query.Query);
                 }
 
                 foreach (SQL_Query sqlQuery in sqlQueryList)
@@ -211,17 +205,11 @@ namespace KDRS_Query
                         w.WriteLine("=================================");
 
                     }
-                    // Console.WriteLine(query.JobId);
-                    // Console.WriteLine(query.Query);
                 }
-
-
             }
-
 
             txtLogbox.AppendText("\r\nJob complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
-
         }
 
         private void btnInFile_Click(object sender, EventArgs e)
@@ -280,7 +268,6 @@ namespace KDRS_Query
 
     public class QueryClass
     {
-
         public string JobId { get; set; }
         public string JobEnabled { get; set; }
         public string JobName { get; set; }

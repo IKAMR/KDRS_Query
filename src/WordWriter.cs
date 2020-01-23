@@ -10,6 +10,7 @@ namespace KDRS_Query
 {
     class WordWriter
     {
+        // Writes query results to report template. Results are written to tables with name matching query jobId.
         public void WriteToDoc(string fileName, List<QueryClass> queryList, string reportFileName)
         {
             Application wordApp = new Application();
@@ -28,16 +29,6 @@ namespace KDRS_Query
                 }
             }
 
-            /*
-            //Table antArk = tables[5];
-
-            Table antArk = getTable("AntArk", tables);
-            Table antArkDel = getTable("AntArkDel", tables);
-
-            antArk.Columns[2].Cells[3].Range.Text = "Antall arkiver skal settes inn her";
-            antArkDel.Columns[2].Cells[3].Range.Text = "Antall arkivdeler skal settes inn her";
-            */
-
             if (String.IsNullOrEmpty(reportFileName))
                 reportFileName = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\testReport.docx";
 
@@ -48,6 +39,7 @@ namespace KDRS_Query
             wordApp.Quit();
         }
 
+        // Returns table with spesific title.
         public Table getTable(string tableTitle, Tables tables)
         {
             foreach(Table t in tables)
