@@ -22,6 +22,8 @@ namespace KDRS_Query
         XPathQueryRunner xPRunner = new XPathQueryRunner();
         MYSQL_Runner sqlRunner = new MYSQL_Runner();
 
+        string targetFolder;
+
         public Form1()
         {
             InitializeComponent();
@@ -135,14 +137,14 @@ namespace KDRS_Query
         {
             txtLogbox.Text = "Running queries";
             string inFile = txtInFile.Text;
-            string targetFolder = txtTrgtPath.Text;
+            targetFolder = txtTrgtPath.Text;
              //string queryFile = txtQFile.Text;
             string queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\xml_queries.txt";
             Console.WriteLine("Reading queries from: " + inFile);
 
             GetQuery(queryFile);
 
-            string outFile = Path.Combine(targetFolder, "_query_results.txt");
+            string outFile = Path.Combine(targetFolder, "kdrs_query_results.txt");
             //string outFile = @"Y:\arkiv-test\sip\documaster\sample-extraction\2016-09-27_11-22-42-000333\uttrekk\results.txt";
 
             //File.Create(outFile);
@@ -239,15 +241,22 @@ namespace KDRS_Query
         {
             txtLogbox.AppendText("\r\nWriting report.");
 
+            string reportFileName = "testReport.docx";
+
+            if (!String.IsNullOrEmpty(txtReportFile.Text))
+                reportFileName = txtReportFile.Text;
+
+            string reportFilePath = Path.Combine(targetFolder, reportFileName);
+
             WordWriter writer = new WordWriter();
 
             string defaultFileName = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.2.0_2020-01-22.docx";
 
             if (File.Exists(defaultFileName))
             {
-                writer.WriteToDoc(defaultFileName, queryList);
+                writer.WriteToDoc(defaultFileName, queryList, reportFilePath);
 
-                txtLogbox.AppendText("\r\nReport complete.");
+                txtLogbox.AppendText("\r\nReport complete. File saved at: " + reportFilePath);
             }else
                 txtLogbox.AppendText("\r\nReport file does not exist.");
         }

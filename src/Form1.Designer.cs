@@ -38,9 +38,9 @@
             this.txtLogbox = new System.Windows.Forms.TextBox();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.btnChooseReport = new System.Windows.Forms.Button();
             this.txtReportFile = new System.Windows.Forms.TextBox();
             this.btnWriteReport = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnInFile
@@ -128,27 +128,18 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // btnChooseReport
-            // 
-            this.btnChooseReport.Location = new System.Drawing.Point(14, 364);
-            this.btnChooseReport.Name = "btnChooseReport";
-            this.btnChooseReport.Size = new System.Drawing.Size(143, 23);
-            this.btnChooseReport.TabIndex = 8;
-            this.btnChooseReport.Text = "Choose report file";
-            this.btnChooseReport.UseVisualStyleBackColor = true;
-            // 
             // txtReportFile
             // 
             this.txtReportFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtReportFile.Location = new System.Drawing.Point(163, 366);
+            this.txtReportFile.Location = new System.Drawing.Point(136, 363);
             this.txtReportFile.Name = "txtReportFile";
             this.txtReportFile.Size = new System.Drawing.Size(531, 20);
             this.txtReportFile.TabIndex = 9;
             // 
             // btnWriteReport
             // 
-            this.btnWriteReport.Location = new System.Drawing.Point(14, 393);
+            this.btnWriteReport.Location = new System.Drawing.Point(12, 398);
             this.btnWriteReport.Name = "btnWriteReport";
             this.btnWriteReport.Size = new System.Drawing.Size(107, 40);
             this.btnWriteReport.TabIndex = 10;
@@ -156,13 +147,22 @@
             this.btnWriteReport.UseVisualStyleBackColor = true;
             this.btnWriteReport.Click += new System.EventHandler(this.btnWriteReport_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 366);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(118, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Choose report file name";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(706, 450);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.btnWriteReport);
-            this.Controls.Add(this.btnChooseReport);
             this.Controls.Add(this.txtReportFile);
             this.Controls.Add(this.txtLogbox);
             this.Controls.Add(this.btnQFile);
@@ -191,9 +191,9 @@
         private System.Windows.Forms.TextBox txtLogbox;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.Button btnChooseReport;
         private System.Windows.Forms.TextBox txtReportFile;
         private System.Windows.Forms.Button btnWriteReport;
+        private System.Windows.Forms.Label label1;
     }
 }
 

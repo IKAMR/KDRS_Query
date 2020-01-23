@@ -79,8 +79,13 @@ namespace KDRS_Query
                         XPathExpression xPathEx = nav.Compile(q.Query);
                         xPathEx.SetContext(nsmgr);
 
-                        while (nodes.MoveNext())
-                            q.Result += nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n") + "\r\n\r\n";
+                        while (nodes.MoveNext()) {
+                            string result = nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n");
+                            if (q.Result != null && !q.Result.Equals(result))
+                                q.Result += "\r\n\r\n" + result;
+                            else
+                                q.Result = result;
+                        }
                     }
                     else
                     {

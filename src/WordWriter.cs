@@ -10,7 +10,7 @@ namespace KDRS_Query
 {
     class WordWriter
     {
-        public void WriteToDoc(string fileName, List<QueryClass> queryList)
+        public void WriteToDoc(string fileName, List<QueryClass> queryList, string reportFileName)
         {
             Application wordApp = new Application();
             Documents documents = wordApp.Documents;
@@ -38,7 +38,10 @@ namespace KDRS_Query
             antArkDel.Columns[2].Cells[3].Range.Text = "Antall arkivdeler skal settes inn her";
             */
 
-            document.SaveAs2(@"C:\developer\c#\kdrs_query\KDRS_Query\doc\testReport.docx");
+            if (String.IsNullOrEmpty(reportFileName))
+                reportFileName = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\testReport.docx";
+
+            document.SaveAs2(reportFileName);
 
             documents.Close();
 
