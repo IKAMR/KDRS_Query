@@ -138,8 +138,8 @@ namespace KDRS_Query
 
              string queryFile = txtQFile.Text;
 
-            if (String.IsNullOrEmpty(queryFile))
-                queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\xml_queries.txt";
+           // if (String.IsNullOrEmpty(queryFile))
+             //   queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\xml_queries.txt";
 
             Console.WriteLine("Reading queries from: " + inFile);
 
@@ -234,6 +234,13 @@ namespace KDRS_Query
                 txtQFile.Text = openFileDialog1.FileName;
         }
 
+        private void btnChooseReportTemplate_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = openFileDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
+                txtReportTempFile.Text = openFileDialog1.FileName;
+        }
+
         private void btnWriteReport_Click(object sender, EventArgs e)
         {
             txtLogbox.AppendText("\r\nWriting report.");
@@ -247,7 +254,9 @@ namespace KDRS_Query
 
             WordWriter writer = new WordWriter();
 
-            string defaultFileName = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.2.0_2020-01-22.docx";
+            string defaultFileName = txtReportTempFile.Text;
+
+            //    @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.2.0_2020-01-22.docx";
 
             if (File.Exists(defaultFileName))
             {
@@ -257,6 +266,8 @@ namespace KDRS_Query
             }else
                 txtLogbox.AppendText("\r\nReport file does not exist.");
         }
+
+
     }
 
     public static class Globals
