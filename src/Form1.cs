@@ -151,7 +151,10 @@ namespace KDRS_Query
 
             foreach (SQL_Query sql_Query in sqlQueryList)
             {
-                sqlRunner.RunSQL(sql_Query);
+                if (sql_Query.JobEnabled.Equals("1"))
+                {
+                    sqlRunner.RunSQL(sql_Query);
+                }
             }
             using (File.Create(outFile)) { }
 
