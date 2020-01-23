@@ -49,7 +49,7 @@
             this.btnInFile.Name = "btnInFile";
             this.btnInFile.Size = new System.Drawing.Size(144, 23);
             this.btnInFile.TabIndex = 0;
-            this.btnInFile.Text = "Choose input file";
+            this.btnInFile.Text = "Choose input folder";
             this.btnInFile.UseVisualStyleBackColor = true;
             this.btnInFile.Click += new System.EventHandler(this.btnInFile_Click);
             // 

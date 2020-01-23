@@ -138,8 +138,12 @@ namespace KDRS_Query
             txtLogbox.Text = "Running queries";
             string inFile = txtInFile.Text;
             targetFolder = txtTrgtPath.Text;
-             //string queryFile = txtQFile.Text;
-            string queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\xml_queries.txt";
+
+             string queryFile = txtQFile.Text;
+
+            if (String.IsNullOrEmpty(queryFile))
+                queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\xml_queries.txt";
+
             Console.WriteLine("Reading queries from: " + inFile);
 
             GetQuery(queryFile);
@@ -159,22 +163,24 @@ namespace KDRS_Query
 
                 foreach (XML_Query query in queryList)
                 {
-                    txtLogbox.AppendText("\r\n" + query.JobId);
+                    if (query.JobEnabled.Equals("1"))
+                    {
+                        txtLogbox.AppendText("\r\n" + query.JobId);
 
-                    w.WriteLine(query.JobId);
-                    w.WriteLine(query.JobEnabled);
-                    w.WriteLine(query.JobName);
-                    w.WriteLine(query.JobDescription);
-                    w.WriteLine(query.System);
-                    w.WriteLine(query.SubSystem);
-                    w.WriteLine(query.Source);
-                    w.WriteLine(query.Target);
-                    w.WriteLine(query.Query);
-                    w.WriteLine("");
-                    w.WriteLine("Query result:");
-                    w.WriteLine(query.Result);
-                    w.WriteLine("=================================");
-
+                        w.WriteLine(query.JobId);
+                        w.WriteLine(query.JobEnabled);
+                        w.WriteLine(query.JobName);
+                        w.WriteLine(query.JobDescription);
+                        w.WriteLine(query.System);
+                        w.WriteLine(query.SubSystem);
+                        w.WriteLine(query.Source);
+                        w.WriteLine(query.Target);
+                        w.WriteLine(query.Query);
+                        w.WriteLine("");
+                        w.WriteLine("Query result:");
+                        w.WriteLine(query.Result);
+                        w.WriteLine("=================================");
+                    }
 
                    // Console.WriteLine(query.JobId);
                    // Console.WriteLine(query.Query);
@@ -182,27 +188,29 @@ namespace KDRS_Query
 
                 foreach (SQL_Query sqlQuery in sqlQueryList)
                 {
-                    txtLogbox.AppendText("\r\n" + sqlQuery.JobId);
+                    if (sqlQuery.JobEnabled.Equals("1"))
+                    {
+                        txtLogbox.AppendText("\r\n" + sqlQuery.JobId);
 
-                    w.WriteLine(sqlQuery.JobId);
-                    w.WriteLine(sqlQuery.JobEnabled);
-                    w.WriteLine(sqlQuery.JobName);
-                    w.WriteLine(sqlQuery.JobDescription);
-                    w.WriteLine(sqlQuery.System);
-                    w.WriteLine(sqlQuery.SubSystem);
-                    w.WriteLine(sqlQuery.Source);
-                    w.WriteLine(sqlQuery.Target);
-                    w.WriteLine(sqlQuery.Server);
-                    w.WriteLine(sqlQuery.Database);
-                    w.WriteLine(sqlQuery.User);
-                    w.WriteLine(sqlQuery.Psw);
-                    w.WriteLine(sqlQuery.Query);
-                    w.WriteLine("");
-                    w.WriteLine("Query result:");
-                    w.WriteLine(sqlQuery.Result);
-                    w.WriteLine("=================================");
+                        w.WriteLine(sqlQuery.JobId);
+                        w.WriteLine(sqlQuery.JobEnabled);
+                        w.WriteLine(sqlQuery.JobName);
+                        w.WriteLine(sqlQuery.JobDescription);
+                        w.WriteLine(sqlQuery.System);
+                        w.WriteLine(sqlQuery.SubSystem);
+                        w.WriteLine(sqlQuery.Source);
+                        w.WriteLine(sqlQuery.Target);
+                        w.WriteLine(sqlQuery.Server);
+                        w.WriteLine(sqlQuery.Database);
+                        w.WriteLine(sqlQuery.User);
+                        w.WriteLine(sqlQuery.Psw);
+                        w.WriteLine(sqlQuery.Query);
+                        w.WriteLine("");
+                        w.WriteLine("Query result:");
+                        w.WriteLine(sqlQuery.Result);
+                        w.WriteLine("=================================");
 
-
+                    }
                     // Console.WriteLine(query.JobId);
                     // Console.WriteLine(query.Query);
                 }
