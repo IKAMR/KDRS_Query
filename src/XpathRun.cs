@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,9 @@ namespace KDRS_Query
             //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             foreach (XML_Query q in Xqueries)
             {
-                Console.WriteLine("Query: " + q.JobName);
+                Console.WriteLine("Query id: " + q.JobId);
+                Console.WriteLine("Query: " + q.Query);
+
                 nodes = nav.Select("//a:arkivdel", nsmgr);
                 XPathExpression xPathEx = nav.Compile(q.Query);
                 xPathEx.SetContext(nsmgr);
@@ -40,41 +43,61 @@ namespace KDRS_Query
                 while (nodes.MoveNext())
                     q.Result = nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n");
             }
+        }
 
+        // Runs XPath from Xqueries on file spesified in query. Either 'arkivstruktur.xml, loependeJournal.xml, offentligJournal.xml or endringslogg.xml.
+        public void RunXpath2(List<QueryClass> Xqueries, string sourceFolder)
+        {
+            foreach (XML_Query q in Xqueries)
+            {
+                if (q.JobEnabled.Equals("1"))
+                {
+                    XPathNavigator nav;
+                    XPathDocument docNav;
+                    XPathNodeIterator nodes;
 
+                    List<string> results = new List<string>();
 
-            /*
-            // C1.  Antall arkiver i arkivstrukturen
-            results.Add("C1");
-            XPathExpression query = nav.Compile("count(/a:arkiv)");
-            query.SetContext(nsmgr);
+                    string xmlFileName = Path.Combine(sourceFolder, q.Source);
+                    Console.WriteLine("Source: " + q.Source + ", XML File: " + xmlFileName);
 
-            results.Add("Antall arkiv: " + nav.Evaluate(query));
-            results.Add("-------------------------------------------------");
-            //-------------------------------------------------
+                    docNav = new XPathDocument(xmlFileName);
 
+                    nav = docNav.CreateNavigator();
 
-            // C2. Antall arkivdeler i arkivstrukturen
-            results.Add("C2");
-            XPathExpression query2 = nav.Compile("count(//a:arkivdel)");
-            query2.SetContext(nsmgr);
+                    XmlNamespaceManager nsmgr = new XmlNamespaceManager(nav.NameTable);
+                    if (q.Source.Equals("arkivstruktur.xml"))
+                    {
+                        nsmgr.AddNamespace("a", "http://www.arkivverket.no/standarder/noark5/arkivstruktur");
+                        nsmgr.AddNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
-            int antallArkivdeler = int.Parse(nav.Evaluate(query2).ToString());
-            results.Add("Antall arkivdeler i arkiv '" + nav.SelectSingleNode("//a:arkiv/a:tittel", nsmgr) + "': " + nav.Evaluate(query2));
-            results.Add("");
+                        Console.WriteLine("Query id: " + q.JobId);
+                        Console.WriteLine("Query: " + q.Query);
 
-            nodes = nav.Select("//a:arkivdel", nsmgr);
-            XPathExpression arkivdelTittel = nav.Compile("concat('\"', descendant::a:tittel, ' (', descendant::a:systemID, ')', '\"' )");
-            arkivdelTittel.SetContext(nsmgr);
+                        nodes = nav.Select("//a:arkivdel", nsmgr);
+                        XPathExpression xPathEx = nav.Compile(q.Query);
+                        xPathEx.SetContext(nsmgr);
 
-            while (nodes.MoveNext())
-                results.Add(nav.Evaluate(arkivdelTittel, nodes).ToString());
-            results.Add("-------------------------------------------------");
-            //-------------------------------------------------
-            */
+                        while (nodes.MoveNext()) {
+                            string result = nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n");
+                            if (q.Result != null && !q.Result.Equals(result))
+                                q.Result += "\r\n\r\n" + result;
+                            else
+                                q.Result = result;
+                        }
+                    }
+                    else
+                    {
+                        nsmgr.AddNamespace("l", "http://www.arkivverket.no/standarder/noark5/loependeJournal");
+                        nsmgr.AddNamespace("o", "http://www.arkivverket.no/standarder/noark5/offentligJournal");
+                        nsmgr.AddNamespace("e", "http://www.arkivverket.no/standarder/noark5/endringslogg");
 
-
-
+                        XPathExpression xPathEx = nav.Compile(q.Query);
+                        xPathEx.SetContext(nsmgr);
+                        q.Result = nav.Evaluate(xPathEx).ToString().Replace("\\r\\n", "\r\n");
+                    }
+                }
+            }
         }
     }
 }
