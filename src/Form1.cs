@@ -28,13 +28,11 @@ namespace KDRS_Query
             Text = Globals.toolName + " " + Globals.toolVersion;
         }
 
-
         private string GetQuery(string filename)
         {
             Console.WriteLine("Reading queries");
 
-
-            using (StreamReader reader = File.OpenText(filename))
+            using (StreamReader reader = new StreamReader(File.OpenRead(filename),Encoding.Default))
             {
                 String line;
                 while (((line = reader.ReadLine()) != null))
@@ -80,7 +78,6 @@ namespace KDRS_Query
                 Console.WriteLine(s);
 
             return "";
-
         }
 
         public void CreateQuery(string qType, List<string> queryInfoList)
@@ -115,8 +112,6 @@ namespace KDRS_Query
             sqlQuery.User = queryInfoList[13].Split('=')[1];
             sqlQuery.Psw = queryInfoList[14].Split('=')[1];
             sqlQuery.Query = queryInfoList[17];
-
-            
         }
 
 
@@ -131,7 +126,7 @@ namespace KDRS_Query
             query.JobDescription = queryInfoList[4].Split('=')[1].Trim();
             query.System = queryInfoList[6].Split('=')[1];
             query.SubSystem = queryInfoList[7].Split('=')[1];
-            query.Source = queryInfoList[8].Split('=')[1];
+            query.Source = queryInfoList[8].Split('=')[1].Trim();
             query.Target = queryInfoList[9].Split('=')[1];
             query.Query = queryInfoList[12];
         }
@@ -147,14 +142,14 @@ namespace KDRS_Query
 
             GetQuery(queryFile);
 
-            //string outFile = Path.Combine(targetFolder, "results.txt");
-            string outFile = @"Y:\arkiv-test\sip\documaster\sample-extraction\2016-09-27_11-22-42-000333\uttrekk\results.txt";
+            string outFile = Path.Combine(targetFolder, "_query_results.txt");
+            //string outFile = @"Y:\arkiv-test\sip\documaster\sample-extraction\2016-09-27_11-22-42-000333\uttrekk\results.txt";
 
             //File.Create(outFile);
-            //xPRunner.RunXPath(queryList, inFile);
+            xPRunner.RunXpath2(queryList, inFile);
             //sqlRunner.RunSQL(sqlQueryList[0]);
 
-            /*
+            
             using (File.Create(outFile)) { }
 
             using (StreamWriter w = File.AppendText(outFile))
@@ -211,10 +206,11 @@ namespace KDRS_Query
                 }
 
 
-            }*/
-            WordWriter writer = new WordWriter();
+            }
+            //WordWriter writer = new WordWriter();
 
-            writer.WriteToDoc(@"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.1.2_2018-11-30.docx");
+            string defaultFileName = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.1.2_2018-11-30_testing.docx";
+            //writer.WriteToDoc();
 
             txtLogbox.AppendText("\r\nJob complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
@@ -248,7 +244,7 @@ namespace KDRS_Query
     public static class Globals
     {
         public static readonly String toolName = "KDRS Query";
-        public static readonly String toolVersion = "0.1";
+        public static readonly String toolVersion = "0.2";
     }
 
     public enum ClassType { XML_Query, SQL_Query }
