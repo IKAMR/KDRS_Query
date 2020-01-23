@@ -148,10 +148,11 @@ namespace KDRS_Query
             string outFile = Path.Combine(targetFolder, "kdrs_query_results.txt");
 
             xPRunner.RunXpath2(queryList, inFile);
-            
-            
-            //sqlRunner.RunSQL(sqlQueryList[0]);
-            
+
+            foreach (SQL_Query sql_Query in sqlQueryList)
+            {
+                sqlRunner.RunSQL(sql_Query);
+            }
             using (File.Create(outFile)) { }
 
             // Creating text file containing all query info including query results
