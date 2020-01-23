@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Word;
-//using Microsoft.Office.Core;
+using Microsoft.Office.Core;
 
 namespace KDRS_Query
 {
     class WordWriter
     {
-        public void WriteToDoc(string fileName, Dictionary<string,string> queryResults)
+        public void WriteToDoc(string fileName, List<QueryClass> queryList)
         {
             Application wordApp = new Application();
             Documents documents = wordApp.Documents;
@@ -18,20 +18,28 @@ namespace KDRS_Query
 
             Tables tables = document.Tables;
 
+            foreach(QueryClass q in queryList)
+            {
+                string tableName = "tbl_" + q.JobId;
+                Table table = getTable(tableName, tables);
+                if (table != null)
+                {
+                    table.Columns[2].Cells[3].Range.Text = q.Result.Replace("\r\n", "\v");
+                }
+            }
 
+            /*
             //Table antArk = tables[5];
 
             Table antArk = getTable("AntArk", tables);
-
             Table antArkDel = getTable("AntArkDel", tables);
 
-            
             antArk.Columns[2].Cells[3].Range.Text = "Antall arkiver skal settes inn her";
             antArkDel.Columns[2].Cells[3].Range.Text = "Antall arkivdeler skal settes inn her";
+            */
 
             document.SaveAs2(@"C:\developer\c#\kdrs_query\KDRS_Query\doc\testReport.docx");
 
-            //document.Close();
             documents.Close();
 
             wordApp.Quit();

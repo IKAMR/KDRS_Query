@@ -49,7 +49,8 @@ namespace KDRS_Query
         {
             foreach (XML_Query q in Xqueries)
             {
-                
+                if (q.JobEnabled.Equals("1"))
+                {
                     XPathNavigator nav;
                     XPathDocument docNav;
                     XPathNodeIterator nodes;
@@ -64,32 +65,33 @@ namespace KDRS_Query
                     nav = docNav.CreateNavigator();
 
                     XmlNamespaceManager nsmgr = new XmlNamespaceManager(nav.NameTable);
-                // var nameSpace = nav.GetNamespace(nav.SelectSingleNode("arkiv").NamespaceURI);
-                //nsmgr.AddNamespace("a", nameSpace);
-                if (q.Source.Equals("arkivstruktur.xml"))
-                {
-                    nsmgr.AddNamespace("a", "http://www.arkivverket.no/standarder/noark5/arkivstruktur");
-                    nsmgr.AddNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
+                    // var nameSpace = nav.GetNamespace(nav.SelectSingleNode("arkiv").NamespaceURI);
+                    //nsmgr.AddNamespace("a", nameSpace);
+                    if (q.Source.Equals("arkivstruktur.xml"))
+                    {
+                        nsmgr.AddNamespace("a", "http://www.arkivverket.no/standarder/noark5/arkivstruktur");
+                        nsmgr.AddNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
-                    Console.WriteLine("Query id: " + q.JobId);
-                    Console.WriteLine("Query: " + q.Query);
+                        Console.WriteLine("Query id: " + q.JobId);
+                        Console.WriteLine("Query: " + q.Query);
 
-                    nodes = nav.Select("//a:arkivdel", nsmgr);
-                    XPathExpression xPathEx = nav.Compile(q.Query);
-                    xPathEx.SetContext(nsmgr);
+                        nodes = nav.Select("//a:arkivdel", nsmgr);
+                        XPathExpression xPathEx = nav.Compile(q.Query);
+                        xPathEx.SetContext(nsmgr);
 
-                    while (nodes.MoveNext())
-                        q.Result = nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n");
-                }
-                else
-                {
-                    nsmgr.AddNamespace("l", "http://www.arkivverket.no/standarder/noark5/loependeJournal");
-                    nsmgr.AddNamespace("o", "http://www.arkivverket.no/standarder/noark5/offentligJournal");
-                    nsmgr.AddNamespace("e", "http://www.arkivverket.no/standarder/noark5/endringslogg");
+                        while (nodes.MoveNext())
+                            q.Result += nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n") + "\r\n\r\n";
+                    }
+                    else
+                    {
+                        nsmgr.AddNamespace("l", "http://www.arkivverket.no/standarder/noark5/loependeJournal");
+                        nsmgr.AddNamespace("o", "http://www.arkivverket.no/standarder/noark5/offentligJournal");
+                        nsmgr.AddNamespace("e", "http://www.arkivverket.no/standarder/noark5/endringslogg");
 
-                    XPathExpression xPathEx = nav.Compile(q.Query);
-                    xPathEx.SetContext(nsmgr);
-                    q.Result = nav.Evaluate(xPathEx).ToString().Replace("\\r\\n", "\r\n");
+                        XPathExpression xPathEx = nav.Compile(q.Query);
+                        xPathEx.SetContext(nsmgr);
+                        q.Result = nav.Evaluate(xPathEx).ToString().Replace("\\r\\n", "\r\n");
+                    }
                 }
             }
         }

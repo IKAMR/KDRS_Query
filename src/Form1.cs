@@ -207,10 +207,7 @@ namespace KDRS_Query
 
 
             }
-            //WordWriter writer = new WordWriter();
 
-            string defaultFileName = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.1.2_2018-11-30_testing.docx";
-            //writer.WriteToDoc();
 
             txtLogbox.AppendText("\r\nJob complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
@@ -238,7 +235,22 @@ namespace KDRS_Query
                 txtQFile.Text = openFileDialog1.FileName;
         }
 
+        private void btnWriteReport_Click(object sender, EventArgs e)
+        {
+            txtLogbox.AppendText("\r\nWriting report.");
 
+            WordWriter writer = new WordWriter();
+
+            string defaultFileName = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.2.0_2020-01-22.docx";
+
+            if (File.Exists(defaultFileName))
+            {
+                writer.WriteToDoc(defaultFileName, queryList);
+
+                txtLogbox.AppendText("\r\nReport complete.");
+            }else
+                txtLogbox.AppendText("\r\nReport file does not exist.");
+        }
     }
 
     public static class Globals

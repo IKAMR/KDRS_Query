@@ -11,7 +11,7 @@ source= arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-count(/a:arkiv)
+concat('Antall arkiv: ', count(//a:arkiv))
 #STOP#
 
 [XML_QUERY]
@@ -27,7 +27,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-count(//a:arkivdel)
+concat('Antall arkivdeler: ', count(//a:arkivdel))
 #STOP#
 
 [XML_QUERY]
@@ -628,7 +628,7 @@ concat('Antall journalregistreringer i offentligJournal: ', count(//o:journalreg
 
 [XML_QUERY]
 
-job_id=I01
+job_id=J01
 job_enabled=1 
 job_name= Antall endringer i endringslogg
 job_description= 

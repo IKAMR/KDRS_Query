@@ -154,6 +154,7 @@
             this.btnWriteReport.TabIndex = 10;
             this.btnWriteReport.Text = "Write report";
             this.btnWriteReport.UseVisualStyleBackColor = true;
+            this.btnWriteReport.Click += new System.EventHandler(this.btnWriteReport_Click);
             // 
             // Form1
             // 
