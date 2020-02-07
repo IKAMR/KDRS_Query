@@ -32,6 +32,24 @@ concat('Antall arkivdeler: ', count(//a:arkivdel))
 
 [XML_QUERY]
 
+job_id=C03
+job_enabled=1 
+job_name=Arkivdelens periode
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+concat('Arkivdel: "', a:tittel, '": ' , '\r\n', 
+	'Opprettet: ' , descendant::a:arkivperiodeStartDato, '\r\n',
+	' Avsluttet: ' , descendant::a:arkivperiodeSluttDato)
+#STOP#
+
+[XML_QUERY]
+
 job_id=C04
 job_enabled=1 
 job_name=Arkivdelen(e)s status i arkivstrukturen
