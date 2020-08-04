@@ -43,6 +43,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnChooseReportTemplate = new System.Windows.Forms.Button();
             this.txtReportTempFile = new System.Windows.Forms.TextBox();
+            this.btnReset = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnInFile
@@ -179,11 +180,22 @@
             this.txtReportTempFile.Size = new System.Drawing.Size(531, 20);
             this.txtReportTempFile.TabIndex = 13;
             // 
+            // btnReset
+            // 
+            this.btnReset.Location = new System.Drawing.Point(587, 155);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(107, 40);
+            this.btnReset.TabIndex = 14;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(706, 476);
+            this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnChooseReportTemplate);
             this.Controls.Add(this.txtReportTempFile);
             this.Controls.Add(this.label1);
@@ -221,6 +233,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnChooseReportTemplate;
         private System.Windows.Forms.TextBox txtReportTempFile;
+        private System.Windows.Forms.Button btnReset;
     }
 }
 

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Office.Interop.Word;
-using Microsoft.Office.Core;
+//using Microsoft.Office.Core;
 
 namespace KDRS_Query
 {
@@ -22,8 +22,9 @@ namespace KDRS_Query
             foreach(QueryClass q in queryList)
             {
                 string tableName = "tbl_" + q.JobId;
+                Console.WriteLine("table: " + tableName);
                 Table table = getTable(tableName, tables);
-                if (table != null)
+                if (table != null && q.JobEnabled.Equals("1"))
                 {
                     table.Columns[2].Cells[3].Range.Text = q.Result.Replace("\r\n", "\v");
                 }

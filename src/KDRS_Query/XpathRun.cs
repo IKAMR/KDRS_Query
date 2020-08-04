@@ -50,11 +50,17 @@ namespace KDRS_Query
         {
             foreach (XML_Query q in Xqueries)
             {
-                if (q.JobEnabled.Equals("1"))
+                if (q.JobEnabled.Equals("1") || q.JobEnabled.Equals("2"))
                 {
                     XPathNavigator nav;
                     XPathDocument docNav;
                     XPathNodeIterator nodes;
+                    XPathExpression xPathEx;
+
+                    string queryNodes = String.Empty;
+                    string queryText = String.Empty;
+
+                    bool splitResults = true;
 
                     List<string> results = new List<string>();
 
@@ -65,25 +71,56 @@ namespace KDRS_Query
 
                     nav = docNav.CreateNavigator();
 
+                    queryText = q.Query;
+
                     XmlNamespaceManager nsmgr = new XmlNamespaceManager(nav.NameTable);
                     if (q.Source.Equals("arkivstruktur.xml"))
                     {
                         nsmgr.AddNamespace("a", "http://www.arkivverket.no/standarder/noark5/arkivstruktur");
                         nsmgr.AddNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
 
+                        string splitAtConcat = "concat";
+
                         Console.WriteLine("Query id: " + q.JobId);
                         Console.WriteLine("Query: " + q.Query);
+                        Console.WriteLine("Index of concat: " + q.Query.IndexOf(splitAtConcat));
 
-                        nodes = nav.Select("//a:arkivdel", nsmgr);
-                        XPathExpression xPathEx = nav.Compile(q.Query);
-                        xPathEx.SetContext(nsmgr);
+                        if (q.Query.Substring(0, 4).Contains(@"//a:") && q.Query.Contains(splitAtConcat) && q.Query.IndexOf(splitAtConcat) > 0)
+                        {
+                            queryNodes = q.Query.Substring(0, q.Query.IndexOf(splitAtConcat) - 1);
+                            queryText = q.Query.Substring(q.Query.IndexOf(splitAtConcat));
 
-                        while (nodes.MoveNext()) {
-                            string result = nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n");
-                            if (q.Result != null && !q.Result.Equals(result))
-                                q.Result += "\r\n\r\n" + result;
-                            else
-                                q.Result = result;
+                            splitResults = false;
+                        }
+
+                        Console.WriteLine("queryNodes: " + queryNodes);
+                        Console.WriteLine("queryText: " + queryText);
+
+
+                        nodes = nav.Select("//a:arkivdel" + queryNodes, nsmgr);
+                        try
+                        {
+                            xPathEx = nav.Compile(queryText);
+                            xPathEx.SetContext(nsmgr);
+
+                            while (nodes.MoveNext())
+                            {
+                                string result = nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n");
+                                if (q.Result != null && !q.Result.Equals(result))
+                                {
+                                    if (splitResults)
+                                        q.Result += "\r\n\r\n" + result;
+                                    else
+                                        q.Result += "\r\n" + result;
+                                }
+                                else
+                                    q.Result = result;
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            q.Result = "ERROR 1, unable to compile: " + q.Query;
+                            Console.WriteLine(e.Message);
                         }
                     }
                     else
@@ -91,10 +128,17 @@ namespace KDRS_Query
                         nsmgr.AddNamespace("l", "http://www.arkivverket.no/standarder/noark5/loependeJournal");
                         nsmgr.AddNamespace("o", "http://www.arkivverket.no/standarder/noark5/offentligJournal");
                         nsmgr.AddNamespace("e", "http://www.arkivverket.no/standarder/noark5/endringslogg");
+                        try
+                        {
+                            xPathEx = nav.Compile(queryText);
+                            xPathEx.SetContext(nsmgr);
 
-                        XPathExpression xPathEx = nav.Compile(q.Query);
-                        xPathEx.SetContext(nsmgr);
-                        q.Result = nav.Evaluate(xPathEx).ToString().Replace("\\r\\n", "\r\n");
+                            q.Result = nav.Evaluate(xPathEx).ToString().Replace("\\r\\n", "\r\n");
+                        }catch (Exception e)
+                        {
+                            q.Result = "ERROR 2, unable to compile: " + q.Query;
+                            Console.WriteLine(e.Message);
+                        }
                     }
                 }
             }

@@ -57,8 +57,9 @@ namespace KDRS_Query
 
                                 while (!(line = reader.ReadLine()).Equals(qStop))
                                 {
-                                    queryText += "\r\n" + line;
+                                    queryText += line + "\r\n";
                                 }
+                                queryText = queryText.TrimEnd('\r', '\n');
                                 queryInfo.Add(queryText);
                                 CreateQuery(qType, queryInfo);
                                 queryInfo.Clear();
@@ -136,6 +137,9 @@ namespace KDRS_Query
             string inFile = txtInFile.Text;
             targetFolder = txtTrgtPath.Text;
 
+            queryList.Clear();
+            sqlQueryList.Clear();
+
              string queryFile = txtQFile.Text;
 
            // if (String.IsNullOrEmpty(queryFile))
@@ -164,7 +168,7 @@ namespace KDRS_Query
 
                 foreach (XML_Query query in queryList)
                 {
-                    if (query.JobEnabled.Equals("1"))
+                    if (query.JobEnabled.Equals("1") || query.JobEnabled.Equals("2"))
                     {
                         txtLogbox.AppendText("\r\n" + query.JobId);
 
@@ -270,7 +274,10 @@ namespace KDRS_Query
                 txtLogbox.AppendText("\r\nReport file does not exist.");
         }
 
+        private void btnReset_Click(object sender, EventArgs e)
+        {
 
+        }
     }
 
     public static class Globals

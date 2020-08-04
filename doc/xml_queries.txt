@@ -27,7 +27,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-concat('Antall arkivdeler: ', count(//a:arkivdel))
+concat('Antall arkivdeler: ', count(//a:arkivdel), '\r\n\r\n') , //a:arkivdel/a:tittel)
 #STOP#
 
 [XML_QUERY]
@@ -45,7 +45,7 @@ target=noark5_analyse_{dt}.log
 #START# 
 concat('Arkivdel: "', a:tittel, '": ' , '\r\n', 
 	'Opprettet: ' , descendant::a:arkivperiodeStartDato, '\r\n',
-	' Avsluttet: ' , descendant::a:arkivperiodeSluttDato)
+	'Avsluttet: ' , descendant::a:arkivperiodeSluttDato)
 #STOP#
 
 [XML_QUERY]
@@ -112,7 +112,8 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-concat('"', descendant::a:klassifikasjonssystem/a:systemID, '": ', count(descendant::a:klasse[not (a:klasse or a:mappe or a:registrering)]))
+for $sid in //klassifikasjonssystem/systemID return 
+concat(//klassifikasjonssystem[systemID=$sid]/systemID,': ', count(//klassifikasjonssystem[systemID=$sid]/klasse[not (klasse or mappe or registrering)]))
 #STOP#
 
 [XML_QUERY]
@@ -133,6 +134,24 @@ concat('Arkivdel "' , a:tittel, '": ', '\r\n',
 	'Antall møtemapper: ', count(descendant::a:mappe[@xsi:type='moetemappe']), '\r\n',
     'Antall mapper uten spesialisering: ', count(descendant::a:mappe[count(@*)=0]), '\r\n',
 	'Totalt: ', count(descendant::a:mappe))
+#STOP#
+
+job_id=C09
+job_enabled=1 
+job_name= Antall mapper per år i arkivstrukturen
+job_description=
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+for $a in //arkivdel
+return 
+(concat('Arkivdel ' , $a/tittel, ': ') , sort(for $v in distinct-values($a//mappe/opprettetDato/substring-before(., "-"))
+return
+(concat($v,": ", count(index-of($a//mappe/opprettetDato/substring-before(., "-"), $v)), " mapper"))))
 #STOP#
 
 [XML_QUERY]
@@ -164,7 +183,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-concat('Klasse "', //a:klasse[a:mappe]/a:klasseID, '": ' , count(//a:klasse[a:mappe]/a:mappe))
+//a:klasse[a:mappe]/concat(../a:tittel, ' - ', 'Klasse "', a:klasseID, '": ' , count(a:mappe))
 #STOP#
 
 [XML_QUERY]
@@ -248,6 +267,23 @@ concat('Arkivdel "' , a:tittel , '":', '\r\n',
 	'Antall saksfremlegg: ', count(descendant::a:registrering[a:journalposttype='Saksframlegg']), '\r\n', '\r\n',
 	'Antall journalposter med hoveddokument: ', count(descendant::a:registrering/a:dokumentbeskrivelse[a:tilknyttetRegistreringSom='Hoveddokument']), '\r\n',
 	'Antall journalposter uten hoveddokument: ', count(descendant::a:registrering[not(a:dokumentbeskrivelse/a:tilknyttetRegistreringSom='Hoveddokument')]))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C16
+job_enabled=2 
+job_name= Antall registreringer for hvert år
+job_description= Journalposttyper og journalposttilknytning i arkivstrukturen (sakarkiver)
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+for $v in distinct-values(//arkivdel[1]//registrering/opprettetDato/substring-before(., "-"))
+return(concat($v, ": ", count(index-of(//arkivdel[1]//registrering/opprettetDato/substring-before(., "-"), $v))))
 #STOP#
 
 [XML_QUERY]
@@ -614,6 +650,24 @@ concat('Antall journalregistreringer i loependeJournal: ', count(//l:journalregi
 
 [XML_QUERY]
 
+job_id=H02
+job_enabled=2 
+job_name= Antall journalposter per år i løpende journal
+job_description= 
+
+system=noark5 
+subsystem= 
+source=loependeJournal.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+for $v in distinct-values(//journalregistrering/journalpost/journaldato/substring-before(., "-"))
+return
+(concat($v,": ", count(index-of(//journalregistrering/journalpost/journaldato/substring-before(., "-"), $v))))
+#STOP#
+
+[XML_QUERY]
+
 job_id=H04
 job_enabled=1 
 job_name= Antall skjermede journalposter i løpende journal
@@ -646,6 +700,40 @@ concat('Antall journalregistreringer i offentligJournal: ', count(//o:journalreg
 
 [XML_QUERY]
 
+job_id=H06
+job_enabled=2 
+job_name= Antall journalposter per år i offentlig journal
+job_description= 
+
+system=noark5 
+subsystem= 
+source=offentligJournal.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+for $v in distinct-values(//journalregistrering/journalpost/journaldato/substring-before(., "-"))
+return
+(concat($v,": ", count(index-of(//journalregistrering/journalpost/journaldato/substring-before(., "-"), $v))))
+#STOP#
+
+[XML_QUERY]
+
+job_id=I01
+job_enabled=1 
+job_name= Antall journalposter i arkivuttrekket
+job_description= 
+
+system=noark5 
+subsystem= 
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+concat('arkivstruktur.xml: ' , count(//a:registrering[@xsi:type='journalpost']))
+#STOP#
+
+[XML_QUERY]
+
 job_id=J01
 job_enabled=1 
 job_name= Antall endringer i endringslogg
@@ -658,6 +746,23 @@ target=noark5_analyse_{dt}.log
 
 #START#
 concat('Antall endringer i endringslogg: ', count(//e:endring))
+#STOP#
+
+[XML_QUERY]
+
+job_id=J01.2
+job_enabled=2 
+job_name= Første og siste endring i endringslogg
+job_description= 
+
+system=noark5 
+subsystem= 
+source=endringslogg.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+min(//endring/endretDato/xs:dateTime(.)),
+max(//endring/endretDato/xs:dateTime(.))
 #STOP#
 
 [SQL_QUERY]
