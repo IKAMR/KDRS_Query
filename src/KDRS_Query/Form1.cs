@@ -151,7 +151,7 @@ namespace KDRS_Query
 
             string outFile = Path.Combine(targetFolder, "kdrs_query_results.txt");
 
-            xPRunner.RunXpath2(queryList, inFile);
+            xPRunner.RunXPath(queryList, inFile);
 
             foreach (SQL_Query sql_Query in sqlQueryList)
             {
@@ -220,11 +220,11 @@ namespace KDRS_Query
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
         }
 
-        private void btnInFile_Click(object sender, EventArgs e)
+        private void btnInFold_Click(object sender, EventArgs e)
         {
-            DialogResult dr = openFileDialog1.ShowDialog();
+            DialogResult dr = folderBrowserDialog1.ShowDialog();
             if (dr == DialogResult.OK)
-                txtInFile.Text = openFileDialog1.FileName;
+                txtInFile.Text = folderBrowserDialog1.SelectedPath;
         }
 
         private void btnTrgtFold_Click(object sender, EventArgs e)

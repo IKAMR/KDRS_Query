@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Saxon.Api;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,37 +12,41 @@ namespace KDRS_Query
 {
     class XPathQueryRunner
     {
-        public void RunXPath(List<QueryClass> Xqueries, string xmlFileName)
+        public void RunXPath(List<QueryClass> Xqueries, string sourceFolder)
         {
-
-            XPathNavigator nav;
-            XPathDocument docNav;
-            XPathNodeIterator nodes;
-
-            List<string> results = new List<string>();
-
-            docNav = new XPathDocument(xmlFileName);
-
-            nav = docNav.CreateNavigator();
-
-            XmlNamespaceManager nsmgr = new XmlNamespaceManager(nav.NameTable);
-            // var nameSpace = nav.GetNamespace(nav.SelectSingleNode("arkiv").NamespaceURI);
-            //nsmgr.AddNamespace("a", nameSpace);
-
-            nsmgr.AddNamespace("a", "http://www.arkivverket.no/standarder/noark5/arkivstruktur");
-            nsmgr.AddNamespace("xsi", "http://www.w3.org/2001/XMLSchema-instance");
-            //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
             foreach (XML_Query q in Xqueries)
             {
-                Console.WriteLine("Query id: " + q.JobId);
-                Console.WriteLine("Query: " + q.Query);
+                if (q.JobEnabled.Equals("1") || q.JobEnabled.Equals("2"))
+                {
 
-                nodes = nav.Select("//a:arkivdel", nsmgr);
-                XPathExpression xPathEx = nav.Compile(q.Query);
-                xPathEx.SetContext(nsmgr);
+                    string xmlFileName = Path.Combine(sourceFolder, q.Source);
+                    Console.WriteLine("Source: " + q.Source + ", XML File: " + xmlFileName);
 
-                while (nodes.MoveNext())
-                    q.Result = nav.Evaluate(xPathEx, nodes).ToString().Replace("\\r\\n", "\r\n");
+                    Processor processor = new Processor();
+
+                    XmlDocument inputDoc = new XmlDocument();
+                    inputDoc.Load(xmlFileName);
+
+                    XdmNode xmlDoc = processor.NewDocumentBuilder().Build(new XmlNodeReader(inputDoc));
+
+                    XPathCompiler xPathCompiler = processor.NewXPathCompiler();
+
+                    string nameSpace = inputDoc.DocumentElement.NamespaceURI;
+
+                    xPathCompiler.DeclareNamespace("", nameSpace);
+
+                    string query = q.Query;
+
+                    try
+                    {
+                        q.Result = xPathCompiler.Evaluate(query, xmlDoc).ToString();
+                    }
+                    catch (Exception e)
+                    {
+                        q.Result = "ERROR 1, unable to compile: " + q.Query;
+                        Console.WriteLine(e.Message);
+                    }
+                }
             }
         }
 

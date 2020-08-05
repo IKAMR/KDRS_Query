@@ -54,7 +54,7 @@
             this.btnInFile.TabIndex = 0;
             this.btnInFile.Text = "Choose input folder";
             this.btnInFile.UseVisualStyleBackColor = true;
-            this.btnInFile.Click += new System.EventHandler(this.btnInFile_Click);
+            this.btnInFile.Click += new System.EventHandler(this.btnInFold_Click);
             // 
             // btnTrgtFold
             // 
