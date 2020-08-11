@@ -129,12 +129,14 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-//arkivdel/(concat('Arkivdel "' , tittel, '": ', '\r\n', 
-	concat('Antall saksmapper: ', count(descendant::mappe[@xsi:type='saksmappe'])), 
-	concat('Antall møtemapper: ', count(descendant::mappe[@xsi:type='moetemappe'])),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '), 
+	concat('Antall saksmapper: ', count(descendant::mappe[type='saksmappe'])), 
+	concat('Antall møtemapper: ', count(descendant::mappe[type='moetemappe'])),
     concat('Antall mapper uten spesialisering: ', count(descendant::mappe[count(@*)=0])),
 	concat('Totalt: ', count(descendant::mappe)))
 #STOP#
+
+[XML_QUERY]
 
 job_id=C09
 job_enabled=1 
@@ -220,9 +222,9 @@ target=noark5_analyse_{dt}.log
 	concat('Antall mapper med status "Under behandling": ', count(descendant::mappe[sakstatus='Underbehandling'])),
 	concat('Antall mapper med status "Avsluttet": ', count(descendant::mappe[saksstatus='Avsluttet'])),
 	concat('Antall mapper med status "Utgår": ', count(descendant::mappe[saksstatus='Utgår'])),
-	concat('Totalt: ', count(descendant::mappe))),
-	concat('Antall avsluttede møtemapper: ', count(descendant::mappe[@xsi:type='moetemappe'][string-length (avsluttetDato/text()) > 0])),
-	concat('Antall møtemapper totalt: ', count(descendant::mappe[@xsi:type='moetemappe'])))
+	concat('Totalt: ', count(descendant::mappe)),
+	concat('Antall avsluttede møtemapper: ', count(descendant::mappe[type='moetemappe'][string-length (avsluttetDato/text()) > 0])),
+	concat('Antall møtemapper totalt: ', count(descendant::mappe[type='moetemappe'])))
 #STOP#
 
 [XML_QUERY]
@@ -238,11 +240,11 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '":',
-	concat('Antall forenklede registreringer: ', count(descendant::registrering[@xsi:type='registrering']),
-	concat('Antall basisregistreringer: ', count(descendant::registrering[@xsi:type='basisregistrering']),
-	concat('Antall journalposter: ', count(descendant::registrering[@xsi:type='journalpost']),
-	concat('Antall møteregistreringer: ', count(descendant::registrering[@xsi:type='moeteregistrering']), 
+//arkivdel/(concat('Arkivdel "' , tittel , '":'),
+	concat('Antall forenklede registreringer: ', count(descendant::registrering[type='registrering'])),
+	concat('Antall basisregistreringer: ', count(descendant::registrering[type='basisregistrering'])),
+	concat('Antall journalposter: ', count(descendant::registrering[type='journalpost'])),
+	concat('Antall møteregistreringer: ', count(descendant::registrering[type='moeteregistrering'])), 
 	concat('Totalt: ', count(descendant::registrering)))
 #STOP#
 
@@ -264,7 +266,7 @@ target=noark5_analyse_{dt}.log
 	concat('Antall utgående dokumenter: ', count(descendant::registrering[journalposttype='Utgående dokument'])),
 	concat('Antall organinterne dokumenter for oppfølging: ', count(descendant::registrering[journalposttype='Organinternt dokument for oppfølging'])),
 	concat('Antall organinterne dokumenter uten oppfølging: ', count(descendant::registrering[journalposttype='Organinternt dokument uten oppfølging'])), 
-	concat('Antall saksfremlegg: ', count(descendant::registrering[journalposttype='Saksframlegg']))),
+	concat('Antall saksfremlegg: ', count(descendant::registrering[journalposttype='Saksframlegg'])),
 	concat('Antall journalposter med hoveddokument: ', count(descendant::registrering/dokumentbeskrivelse[tilknyttetRegistreringSom='Hoveddokument'])),
 	concat('Antall journalposter uten hoveddokument: ', count(descendant::registrering[not(dokumentbeskrivelse/tilknyttetRegistreringSom='Hoveddokument')])))
 #STOP#
@@ -338,8 +340,8 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": ',
-	concat('Antall dokumentbeskrivelser: ', count(descendant::dokumentbeskrivelse))))
+//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+	concat('Antall dokumentbeskrivelser: ', count(descendant::dokumentbeskrivelse)))
 #STOP#
 
 [XML_QUERY]
@@ -466,7 +468,7 @@ target=noark5_analyse_{dt}.log
 #START#
 //arkivdel/(concat('Arkivdel "' , tittel , '": '),
                 concat('Antall presedenser i saksmapper: ', count(descendant::mappe/presedens)),
-                concat('Antall presedenser i journalposter: ', count(descendant::registrering[@xsi:type='journalpost']/presedens)))
+                concat('Antall presedenser i journalposter: ', count(descendant::registrering[type='journalpost']/presedens)))
 #STOP#
 
 [XML_QUERY]
@@ -484,7 +486,7 @@ target=noark5_analyse_{dt}.log
 #START#
 //arkivdel/(concat('Arkivdel "' , tittel , '": '),
                 concat('Antall korrespondanseparter: ', count(descendant::korrespondansepart/korrespondansepartNavn)),
-                concat('(', count(descendant::registrering[@xsi:type='journalpost'][not(journalstatus='Utgår')]), ' journalposter eksl. journalstatus utgår)'))
+                concat('(', count(descendant::registrering[type='journalpost'][not(journalstatus='Utgår')]), ' journalposter eksl. journalstatus utgår)'))
 #STOP#
 
 [XML_QUERY]
@@ -501,8 +503,8 @@ target=noark5_analyse_{dt}.log
 
 #START#
 //arkivdel/(concat('Arkivdel "' , tittel , '": '),
-      concat('Antall journalposter som avskrives av andre journalposter: ', count(descendant::registrering[@xsi:type='journalpost']/avskrivning[string-length(referanseAvskrivesAvJournalpost)>0]/referanseAvskrivesAvJournalpost)),
-      concat('Antall avskrevne journalposter: ', count(descendant::registrering[@xsi:type='journalpost']/avskrivning[string-length(avskrivningsmaate)>0]/avskrivningsmaate)))
+      concat('Antall journalposter som avskrives av andre journalposter: ', count(descendant::registrering[type='journalpost']/avskrivning[string-length(referanseAvskrivesAvJournalpost)>0]/referanseAvskrivesAvJournalpost)),
+      concat('Antall avskrevne journalposter: ', count(descendant::registrering[type='journalpost']/avskrivning[string-length(avskrivningsmaate)>0]/avskrivningsmaate)))
 #STOP#
 
 [XML_QUERY]
@@ -519,8 +521,8 @@ target=noark5_analyse_{dt}.log
 
 #START#
 //arkivdel/(concat('Arkivdel "' , tittel , '": '), 
-      concat('Antall journalposter med dokumentflyt: ', count(descendant::registrering[@xsi:type='journalpost'][dokumentflyt])),
-	  concat('Antall dokumentflyt: ', count(descendant::registrering[@xsi:type='journalpost']/dokumentflyt)))
+      concat('Antall journalposter med dokumentflyt: ', count(descendant::registrering[type='journalpost'][dokumentflyt])),
+	  concat('Antall dokumentflyt: ', count(descendant::registrering[type='journalpost']/dokumentflyt)))
 #STOP#
 
 [XML_QUERY]
@@ -718,7 +720,7 @@ target=noark5_analyse_{dt}.log
 #START#
 for $v in distinct-values(//journalregistrering/journalpost/journaldato/substring-before(., "-"))
 return
-(concat($v,": ", count(index-of(//journalregistrering/journalpost/journaldato/substring-before(., "-"), $v))))
+concat($v,": ", count(index-of(//journalregistrering/journalpost/journaldato/substring-before(., "-"), $v)))
 #STOP#
 
 [XML_QUERY]
@@ -734,7 +736,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-concat('arkivstruktur.xml: ' , count(//registrering[@xsi:type='journalpost']))
+concat('arkivstruktur.xml: ' , count(//registrering[type='journalpost']))
 #STOP#
 
 [XML_QUERY]
