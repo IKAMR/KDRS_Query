@@ -165,6 +165,10 @@ namespace KDRS_Query
             // Creating text file containing all query info including query results
             using (StreamWriter w = File.AppendText(outFile))
             {
+                w.WriteLine("Query file: " + queryFile);
+                w.WriteLine("");
+                w.WriteLine("=================================");
+                w.WriteLine("");
 
                 foreach (XML_Query query in queryList)
                 {

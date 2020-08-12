@@ -1,6 +1,6 @@
 [XML_QUERY]
 
-job_id=5.a.1-01
+job_id=5.a.1-1
 job_enabled=1 
 job_name=Arkiv_info
 job_description=
@@ -18,7 +18,7 @@ target=noark5_analyse_{dt}.log
 
 [XML_QUERY]
 
-job_id=5.a.1-02
+job_id=5.a.1-2
 job_enabled=1 
 job_name=Arkivskaper_info
 job_description=
@@ -36,7 +36,7 @@ return
 
 [XML_QUERY]
 
-job_id=5.a.1-03
+job_id=5.a.1-3
 job_enabled=1 
 job_name=Arkivdeler_info
 job_description=
@@ -56,7 +56,7 @@ concat( "Arkivstrukturen inneholder ", count(//arkivdel), " arkivdeler:"),
 
 [XML_QUERY]
 
-job_id=5.a.1-04
+job_id=5.a.1-4
 job_enabled=1 
 job_name=Arkivdeler_info_2
 job_description= Klasser, Mapper, Registreringer
@@ -172,15 +172,16 @@ source= arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-concat("Klassifikasjonssystemer", "&#10;---&#10;",
-"systemID (1): ", //klassifikasjonssystem/systemID, "&#10;",
-"klassifikasjonstype (0-1): ", //klassifikasjonssystem/klassifikasjonstype, "&#10;",
-"tittel (1): ", //klassifikasjonssystem/tittel, "&#10;",
-"beskrivelse (0-1): ", //klassifikasjonssystem/beskrivelse, "&#10;",
-"opprettetDato (1): ", //klassifikasjonssystem/opprettetDato, "&#10;",
-"opprettetAv (1): ", //klassifikasjonssystem/opprettetAv, "&#10;",
-"avsluttetDato (0-1): ", //klassifikasjonssystem/avsluttetDato, "&#10;",
-"avsluttetAv (0-1): ", //klassifikasjonssystem/avsluttetAv, "&#10;---&#10;")
+"Klassifikasjonssystemer: ",
+//klassifikasjonssystem/(
+concat("systemID (1): ", systemID),
+concat("klassifikasjonstype (0-1): ", //klassifikasjonssystem/klassifikasjonstype),
+concat("tittel (1): ", //klassifikasjonssystem/tittel),
+concat("beskrivelse (0-1): ", //klassifikasjonssystem/beskrivelse),
+concat("opprettetDato (1): ", //klassifikasjonssystem/opprettetDato),
+concat("opprettetAv (1): ", //klassifikasjonssystem/opprettetAv),
+concat("avsluttetDato (0-1): ", //klassifikasjonssystem/avsluttetDato),
+concat("avsluttetAv (0-1): ", //klassifikasjonssystem/avsluttetAv))
 #STOP#
 
 [XML_QUERY]
@@ -196,12 +197,11 @@ source= arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-concat("Klasser ", count(//klassifikasjonssystem/descendant::klasse), "&#10;", 
-"Klasser nivå 1: ", count(//klassifikasjonssystem/descendant::klasse) - count(//klassifikasjonssystem/descendant::klasse/klasse), "&#10;", 
-"Klasser nivå 2: ", count(//klassifikasjonssystem/descendant::klasse/klasse) - count(//klassifikasjonssystem/descendant::klasse/klasse/klasse), "&#10;", 
-"Klasser nivå 3: ", count(//klassifikasjonssystem/descendant::klasse/klasse/klasse) - 
-count(//klassifikasjonssystem/descendant::klasse/klasse/klasse/klasse), "&#10;", 
-"Klasser nivå 4: ", count(//klassifikasjonssystem/descendant::klasse/klasse/klasse/klasse))
+//klassifikasjonssystem/(concat("Klasser ", count(descendant::klasse)), 
+concat("Klasser nivå 1: ", count(descendant::klasse) - count(descendant::klasse/klasse)), 
+concat("Klasser nivå 2: ", count(descendant::klasse/klasse) - count(descendant::klasse/klasse/klasse)), 
+concat("Klasser nivå 3: ", count(descendant::klasse/klasse/klasse) - count(descendant::klasse/klasse/klasse/klasse)), 
+concat("Klasser nivå 4: ", count(descendant::klasse/klasse/klasse/klasse)))
 #STOP#
 
 [XML_QUERY]
@@ -310,4 +310,20 @@ target=noark5_analyse_{dt}.log
 for $v in distinct-values(//klasse/avsluttetAv)
 return
 (concat($v,": ", count(index-of(//klasse/avsluttetAv, $v))))
+#STOP#
+
+[XML_QUERY]
+
+job_id=5.a.4-1
+job_enabled=1 
+job_name=Ant_mapper
+job_description=
+
+system=noark5 
+subsystem= 
+source= arkivstruktur.xml
+target=noark5_analyse_{dt}.log
+
+#START#
+
 #STOP#

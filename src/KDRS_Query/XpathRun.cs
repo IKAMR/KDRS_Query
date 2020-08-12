@@ -32,8 +32,10 @@ namespace KDRS_Query
                     XPathCompiler xPathCompiler = processor.NewXPathCompiler();
 
                     string nameSpace = inputDoc.DocumentElement.NamespaceURI;
+                    string nameSpaceXsi = inputDoc.DocumentElement.GetNamespaceOfPrefix("xsi");
 
                     xPathCompiler.DeclareNamespace("", nameSpace);
+                    xPathCompiler.DeclareNamespace("xsi", nameSpaceXsi);
 
                     string query = q.Query;
 
