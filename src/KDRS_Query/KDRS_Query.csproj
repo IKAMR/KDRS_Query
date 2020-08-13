@@ -108,6 +108,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MYSQL_Runner.cs" />
+    <Compile Include="Query.cs" />
     <Compile Include="WordWriter.cs" />
     <Compile Include="XpathRun.cs" />
     <EmbeddedResource Include="Form1.resx">

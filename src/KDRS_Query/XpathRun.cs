@@ -65,11 +65,7 @@ namespace KDRS_Query
                     XPathExpression xPathEx;
 
                     string queryNodes = String.Empty;
-                    string queryText = String.Empty;
-
                     bool splitResults = true;
-
-                    List<string> results = new List<string>();
 
                     string xmlFileName = Path.Combine(sourceFolder, q.Source);
                     Console.WriteLine("Source: " + q.Source + ", XML File: " + xmlFileName);
@@ -78,8 +74,7 @@ namespace KDRS_Query
 
                     nav = docNav.CreateNavigator();
 
-                    queryText = q.Query;
-
+                    string queryText = q.Query;
                     XmlNamespaceManager nsmgr = new XmlNamespaceManager(nav.NameTable);
                     if (q.Source.Equals("arkivstruktur.xml"))
                     {
