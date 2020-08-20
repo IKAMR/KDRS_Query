@@ -20,6 +20,7 @@ namespace KDRS_Query
         string targetFolder;
         string queryFile;
         string inFile;
+        bool cleanOut;
 
         //******************************************************************
         public Form1()
@@ -34,6 +35,8 @@ namespace KDRS_Query
             txtLogbox.Text = "Running queries";
             inFile = txtInFile.Text;
             targetFolder = txtTrgtPath.Text;
+
+            cleanOut = chkBox_cleanOut.Checked;
 
             queryList.Clear();
             sqlQueryList.Clear();
@@ -157,8 +160,16 @@ namespace KDRS_Query
         //******************************************************************
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            string outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) +".txt");
+            string outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + ".txt");
 
+            writeResultsToFile(outFile, cleanOut);
+
+            txtLogbox.AppendText("\r\nJob complete.");
+            txtLogbox.AppendText("\r\nResults saved at: " + outFile);
+        }
+
+        private void writeResultsToFile(string outFile, bool cleanOut)
+        {
             using (File.Create(outFile)) { }
 
             // Creating text file containing all query info including query results
@@ -176,17 +187,24 @@ namespace KDRS_Query
                         txtLogbox.AppendText("\r\n" + query.JobId);
 
                         w.WriteLine(query.JobId);
-                        w.WriteLine(query.JobEnabled);
-                        w.WriteLine(query.JobName);
-                        w.WriteLine(query.JobDescription);
-                        w.WriteLine(query.System);
-                        w.WriteLine(query.SubSystem);
-                        w.WriteLine(query.Source);
-                        w.WriteLine(query.Target);
-                        w.WriteLine(query.Query);
-                        w.WriteLine("");
-                        w.WriteLine("Query result:");
-                        w.WriteLine(query.Result);
+
+                        if (!cleanOut)
+                        {
+                            w.WriteLine(query.JobEnabled);
+                            w.WriteLine(query.JobName);
+                            w.WriteLine(query.JobDescription);
+                            w.WriteLine(query.System);
+                            w.WriteLine(query.SubSystem);
+                            w.WriteLine(query.Source);
+                            w.WriteLine(query.Target);
+                            w.WriteLine(query.Query);
+                            w.WriteLine("");
+                            w.WriteLine("Query result:");
+                        }
+                        else
+                        { w.WriteLine(""); }
+
+                        w.WriteLine(query.Result);}
                         w.WriteLine("=================================");
                     }
                 }
@@ -217,9 +235,6 @@ namespace KDRS_Query
                     }
                 }
             }
-
-            txtLogbox.AppendText("\r\nJob complete.");
-            txtLogbox.AppendText("\r\nResults saved at: " + outFile);
         }
 
         //******************************************************************
