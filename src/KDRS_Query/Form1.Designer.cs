@@ -44,6 +44,7 @@
             this.btnChooseReportTemplate = new System.Windows.Forms.Button();
             this.txtReportTempFile = new System.Windows.Forms.TextBox();
             this.btnReset = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // btnInFile
@@ -118,6 +119,7 @@
             this.txtLogbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLogbox.BackColor = System.Drawing.SystemColors.HighlightText;
             this.txtLogbox.Location = new System.Drawing.Point(12, 201);
             this.txtLogbox.Multiline = true;
             this.txtLogbox.Name = "txtLogbox";
@@ -190,10 +192,15 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.HighlightText;
             this.ClientSize = new System.Drawing.Size(706, 476);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnChooseReportTemplate);
@@ -234,6 +241,7 @@
         private System.Windows.Forms.Button btnChooseReportTemplate;
         private System.Windows.Forms.TextBox txtReportTempFile;
         private System.Windows.Forms.Button btnReset;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 

@@ -12,6 +12,9 @@ namespace KDRS_Query
 {
     class XPathQueryRunner
     {
+        public delegate void ProgressUpdate(string queryId);
+        public event ProgressUpdate OnProgressUpdate;
+
         public void RunXPath(List<QueryClass> Xqueries, string sourceFolder)
         {
             foreach (XML_Query q in Xqueries)
@@ -41,10 +44,12 @@ namespace KDRS_Query
 
                     try
                     {
+                        OnProgressUpdate?.Invoke(q.JobId);
                         q.Result = xPathCompiler.Evaluate(query, xmlDoc).ToString();
                     }
                     catch (Exception e)
                     {
+                        OnProgressUpdate?.Invoke("ERROR: " + q.JobId);
                         q.Result = "ERROR 1, unable to compile: " + q.Query;
                         Console.WriteLine(e.Message);
                     }

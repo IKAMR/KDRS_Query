@@ -10,6 +10,10 @@ namespace KDRS_Query
 {
     class MYSQL_Runner
     {
+
+        public delegate void ProgressUpdate(string queryId);
+        public event ProgressUpdate OnProgressUpdate;
+
         public void RunSQL(SQL_Query sqlQuery)
         {
             string connectionstring;
@@ -21,6 +25,7 @@ namespace KDRS_Query
             cnn = new MySqlConnection(connectionstring);
             try
             {
+                OnProgressUpdate?.Invoke(sqlQuery.JobId);
                 cnn.Open();
                 Console.WriteLine("Connection Open");
 

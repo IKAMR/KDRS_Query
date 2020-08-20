@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -12,44 +13,126 @@ namespace KDRS_Query
         List<QueryClass> queryList = new List<QueryClass>();
         List<SQL_Query> sqlQueryList = new List<SQL_Query>();
 
-
         Query query = new Query();
         XPathQueryRunner xPRunner = new XPathQueryRunner();
         MYSQL_Runner sqlRunner = new MYSQL_Runner();
 
         string targetFolder;
+        string queryFile;
+        string inFile;
 
+        //******************************************************************
         public Form1()
         {
             InitializeComponent();
             Text = Globals.toolName + " " + Globals.toolVersion;
         }
 
-       
-
-
-     
-
+        //******************************************************************
         private void btnRunQ_Click(object sender, EventArgs e)
         {
             txtLogbox.Text = "Running queries";
-            string inFile = txtInFile.Text;
+            inFile = txtInFile.Text;
             targetFolder = txtTrgtPath.Text;
 
             queryList.Clear();
             sqlQueryList.Clear();
 
-             string queryFile = txtQFile.Text;
+            btnChooseReportTemplate.Enabled = false;
+            btnInFile.Enabled = false;
+            btnQFile.Enabled = false;
+            btnReset.Enabled = false;
+            btnRunQ.Enabled = false;
+            btnTrgtFold.Enabled = false;
+            btnWriteReport.Enabled = false;
 
-           // if (String.IsNullOrEmpty(queryFile))
-             //   queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\xml_queries.txt";
+            backgroundWorker1 = new BackgroundWorker();
+            backgroundWorker1.DoWork += backgroundWorker1_DoWork;
+            backgroundWorker1.ProgressChanged += backgroundWorker1_ProgressChanged;
+            backgroundWorker1.RunWorkerCompleted += backgroundWorker1_RunWorkerCompleted;
+            backgroundWorker1.WorkerReportsProgress = true;
+            backgroundWorker1.RunWorkerAsync();
+
+        }
+
+        //******************************************************************
+        private void btnInFold_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = folderBrowserDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
+                txtInFile.Text = folderBrowserDialog1.SelectedPath;
+        }
+
+        //******************************************************************
+        private void btnTrgtFold_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = folderBrowserDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
+                txtTrgtPath.Text = folderBrowserDialog1.SelectedPath;
+        }
+
+        //******************************************************************
+        private void btnQFile_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = openFileDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
+                txtQFile.Text = openFileDialog1.FileName;
+        }
+
+        //******************************************************************
+        private void btnChooseReportTemplate_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = openFileDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
+                txtReportTempFile.Text = openFileDialog1.FileName;
+        }
+
+        //******************************************************************
+        private void btnWriteReport_Click(object sender, EventArgs e)
+        {
+            txtLogbox.AppendText("\r\nWriting report.");
+
+            string reportFileName = "testReport.docx";
+
+            if (!String.IsNullOrEmpty(txtReportFile.Text))
+                reportFileName = txtReportFile.Text;
+
+            string reportFilePath = Path.Combine(targetFolder, reportFileName);
+
+            WordWriter writer = new WordWriter();
+
+            string defaultFileName = txtReportTempFile.Text;
+
+            //    @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.2.0_2020-01-22.docx";
+
+            if (File.Exists(defaultFileName))
+            {
+                writer.WriteToDoc(defaultFileName, queryList, reportFilePath);
+
+                txtLogbox.AppendText("\r\nReport complete. File saved at: " + reportFilePath);
+            }else
+                txtLogbox.AppendText("\r\nReport file does not exist.");
+        }
+
+
+        //******************************************************************
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            queryFile = txtQFile.Text;
+
+            // if (String.IsNullOrEmpty(queryFile))
+            //   queryFile = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\xml_queries.txt";
 
             Console.WriteLine("Reading queries from: " + inFile);
 
             query.GetQuery(queryFile);
-
-            string outFile = Path.Combine(targetFolder, "kdrs_query_results.txt");
-
+            backgroundWorker1.ReportProgress(0, "Queries read from file");
+                       
             queryList = query.QueryList;
 
             xPRunner.RunXPath(queryList, inFile);
@@ -63,6 +146,19 @@ namespace KDRS_Query
                     sqlRunner.RunSQL(sql_Query);
                 }
             }
+        }
+
+        //******************************************************************
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            txtLogbox.AppendText("\r\n" + e.UserState.ToString());
+        }
+
+        //******************************************************************
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            string outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) +".txt");
+
             using (File.Create(outFile)) { }
 
             // Creating text file containing all query info including query results
@@ -118,7 +214,6 @@ namespace KDRS_Query
                         w.WriteLine("Query result:");
                         w.WriteLine(sqlQuery.Result);
                         w.WriteLine("=================================");
-
                     }
                 }
             }
@@ -127,71 +222,21 @@ namespace KDRS_Query
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
         }
 
-        private void btnInFold_Click(object sender, EventArgs e)
+        //******************************************************************
+        private void query_OnProgressUpdate(string queryId)
         {
-            DialogResult dr = folderBrowserDialog1.ShowDialog();
-            if (dr == DialogResult.OK)
-                txtInFile.Text = folderBrowserDialog1.SelectedPath;
-        }
-
-        private void btnTrgtFold_Click(object sender, EventArgs e)
-        {
-            DialogResult dr = folderBrowserDialog1.ShowDialog();
-            if (dr == DialogResult.OK)
-                txtTrgtPath.Text = folderBrowserDialog1.SelectedPath;
-        }
-
-        private void btnQFile_Click(object sender, EventArgs e)
-        {
-            DialogResult dr = openFileDialog1.ShowDialog();
-            if (dr == DialogResult.OK)
-                txtQFile.Text = openFileDialog1.FileName;
-        }
-
-        private void btnChooseReportTemplate_Click(object sender, EventArgs e)
-        {
-            DialogResult dr = openFileDialog1.ShowDialog();
-            if (dr == DialogResult.OK)
-                txtReportTempFile.Text = openFileDialog1.FileName;
-        }
-
-        private void btnWriteReport_Click(object sender, EventArgs e)
-        {
-            txtLogbox.AppendText("\r\nWriting report.");
-
-            string reportFileName = "testReport.docx";
-
-            if (!String.IsNullOrEmpty(txtReportFile.Text))
-                reportFileName = txtReportFile.Text;
-
-            string reportFilePath = Path.Combine(targetFolder, reportFileName);
-
-            WordWriter writer = new WordWriter();
-
-            string defaultFileName = txtReportTempFile.Text;
-
-            //    @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.2.0_2020-01-22.docx";
-
-            if (File.Exists(defaultFileName))
+            base.Invoke((System.Action)delegate
             {
-                writer.WriteToDoc(defaultFileName, queryList, reportFilePath);
-
-                txtLogbox.AppendText("\r\nReport complete. File saved at: " + reportFilePath);
-            }else
-                txtLogbox.AppendText("\r\nReport file does not exist.");
+                backgroundWorker1.ReportProgress(0, queryId);
+            });
         }
 
-        private void btnReset_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 
+    //====================================================================================================
     public static class Globals
     {
         public static readonly String toolName = "KDRS Query";
         public static readonly String toolVersion = "0.2";
     }
-
-    
 }

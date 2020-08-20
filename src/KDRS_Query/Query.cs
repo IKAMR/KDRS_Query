@@ -55,7 +55,6 @@ namespace KDRS_Query
                                 queryInfo.Clear();
                                 break;
                             }
-
                         }
                     }
                 }
@@ -146,7 +145,6 @@ namespace KDRS_Query
                 case ClassType.SQL_Query: return new SQL_Query();
                 default: throw new ArgumentOutOfRangeException();
             }
-
         }
     }
 
@@ -160,6 +158,5 @@ namespace KDRS_Query
         public string Database { get; set; }
         public string User { get; set; }
         public string Psw { get; set; }
-
     }
 }
