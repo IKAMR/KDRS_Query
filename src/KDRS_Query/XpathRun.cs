@@ -45,7 +45,9 @@ namespace KDRS_Query
                     try
                     {
                         OnProgressUpdate?.Invoke(q.JobId);
-                        q.Result = xPathCompiler.Evaluate(query, xmlDoc).ToString();
+                        string result = xPathCompiler.Evaluate(query, xmlDoc).ToString();
+                        
+                        q.Result = result.Replace("\"", "");
                     }
                     catch (Exception e)
                     {

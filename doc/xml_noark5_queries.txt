@@ -61,7 +61,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-//arkivdel/concat('Arkivdel "' , tittel , '": "', descendant::arkivdelstatus, '"')
+//arkivdel/concat("Arkivdel '" , tittel , "': '", descendant::arkivdelstatus, "'")
 #STOP#
 
 [XML_QUERY]

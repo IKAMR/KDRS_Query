@@ -166,6 +166,14 @@ namespace KDRS_Query
 
             txtLogbox.AppendText("\r\nJob complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
+
+            btnChooseReportTemplate.Enabled = true;
+            btnInFile.Enabled = true;
+            btnQFile.Enabled = true;
+            btnReset.Enabled = true;
+            btnRunQ.Enabled = true;
+            btnTrgtFold.Enabled = true;
+            btnWriteReport.Enabled = true;
         }
 
         private void writeResultsToFile(string outFile, bool cleanOut)
@@ -202,9 +210,11 @@ namespace KDRS_Query
                             w.WriteLine("Query result:");
                         }
                         else
-                        { w.WriteLine(""); }
+                        { w.WriteLine("");
 
-                        w.WriteLine(query.Result);}
+                        }
+
+                        w.WriteLine(query.Result);
                         w.WriteLine("=================================");
                     }
                 }
