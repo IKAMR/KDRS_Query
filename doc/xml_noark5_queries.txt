@@ -43,7 +43,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-//arkivdel/concat('Arkivdel: "', tittel, '": ' ,  
+//arkivdel/concat("Arkivdel '", tittel, "': " ,  
 	'Opprettet: ' , descendant::arkivperiodeStartDato, ', ',
 	'Avsluttet: ' , descendant::arkivperiodeSluttDato)
 #STOP#
@@ -77,7 +77,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-//arkivdel/concat('Arkivdel "', tittel, '": ', count(klassifikasjonssystem))
+//arkivdel/concat("Arkivdel '", tittel, "': ", count(klassifikasjonssystem))
 #STOP#
 
 [XML_QUERY]
@@ -93,7 +93,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-//arkivdel/(concat('Arkivdel "' , tittel, '": ', count(descendant::klasse)) ,
+//arkivdel/(concat("Arkivdel '" , tittel, "': ", count(descendant::klasse)) ,
 		concat('level 1: ', count(descendant::klasse) - count(descendant::klasse/klasse)),
 		concat('level 2: ', count(descendant::klasse/klasse) - count(descendant::klasse/klasse/klasse)),
 		concat('level 3: ', count(descendant::klasse/klasse/klasse)))
@@ -129,7 +129,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-//arkivdel/(concat('Arkivdel "' , tittel, '": '), 
+//arkivdel/(concat("Arkivdel '" , tittel, "': "), 
 	concat('Antall saksmapper: ', count(descendant::mappe[type='saksmappe'])), 
 	concat('Antall møtemapper: ', count(descendant::mappe[type='moetemappe'])),
     concat('Antall mapper uten spesialisering: ', count(descendant::mappe[count(@*)=0])),
@@ -153,7 +153,7 @@ for $a in //arkivdel
 return 
 (concat('Arkivdel ' , $a/tittel, ': ') , sort(for $v in distinct-values($a//mappe/opprettetDato/substring-before(., "-"))
 return
-(concat($v,": ", count(index-of($a//mappe/opprettetDato/substring-before(., "-"), $v)), " mapper"))))
+(concat($v,": ", count(index-of($a//mappe/opprettetDato/substring-before(., "-"), $v))))))
 #STOP#
 
 [XML_QUERY]
@@ -169,7 +169,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START# 
-//arkivdel/concat('Arkivdel "' , tittel , '": ', count(descendant::klasse[klasse]/mappe))
+//arkivdel/concat("Arkivdel '" , tittel, "': ", count(descendant::klasse[klasse]/mappe))
 #STOP#
 
 [XML_QUERY]
@@ -201,7 +201,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": ') , 
+//arkivdel/(concat("Arkivdel '" , tittel, "': ") , 
 	concat('Antall mapper uten registreringer: ', count(descendant::mappe[not (mappe or registrering)])))
 #STOP#
 
@@ -218,7 +218,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '":'),
+//arkivdel/(concat("Arkivdel '" , tittel, "': "),
 	concat('Antall mapper med status "Under behandling": ', count(descendant::mappe[sakstatus='Underbehandling'])),
 	concat('Antall mapper med status "Avsluttet": ', count(descendant::mappe[saksstatus='Avsluttet'])),
 	concat('Antall mapper med status "Utgår": ', count(descendant::mappe[saksstatus='Utgår'])),
@@ -240,7 +240,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '":'),
+//arkivdel/(concat("Arkivdel '" , tittel, "': "),
 	concat('Antall forenklede registreringer: ', count(descendant::registrering[type='registrering'])),
 	concat('Antall basisregistreringer: ', count(descendant::registrering[type='basisregistrering'])),
 	concat('Antall journalposter: ', count(descendant::registrering[type='journalpost'])),
@@ -261,7 +261,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat("Arkivdel '" , tittel, "': "),
 	concat('Antall inngående dokumenter: ', count(descendant::registrering[journalposttype='Inngående dokument'])),
 	concat('Antall utgående dokumenter: ', count(descendant::registrering[journalposttype='Utgående dokument'])),
 	concat('Antall organinterne dokumenter for oppfølging: ', count(descendant::registrering[journalposttype='Organinternt dokument for oppfølging'])),
@@ -303,7 +303,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
 	concat('Registreringer uten dokumentbeskrivelse: ', count(descendant::registrering[not (dokumentbeskrivelse)]/registreringsID)))
 #STOP#
 
@@ -320,7 +320,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '":'),
+//arkivdel/(concat('Arkivdel "' , tittel, '":'),
 	concat('Antall med status "Arkivert": ', count(descendant::registrering[journalstatus='Arkivert'])),
 	concat('Antall med status "Utgår": ', count(descendant::registrering[journalstatus='Utgår'])),
 	concat('Antall med status "Journalført": ', count(descendant::registrering[journalstatus='Journalført'])),
@@ -340,7 +340,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
 	concat('Antall dokumentbeskrivelser: ', count(descendant::dokumentbeskrivelse)))
 #STOP#
 
@@ -357,7 +357,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '), 
+//arkivdel/(concat('Arkivdel "' , tittel, '": '), 
 	concat('Antall dokumentbeskrivelser uten dokumentobjekt: ', count(descendant::dokumentbeskrivelse[not(dokumentobjekt)])))
 #STOP#
 
@@ -374,7 +374,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
 	concat('Antall med status "Dokumentet er ferdigstilt": ', count(descendant::dokumentbeskrivelse[dokumentstatus='Dokumentet er ferdigstilt'])),
 	concat('Antall med status "Dokumentet er under redigering": ', count(descendant::dokumentbeskrivelse[dokumentstatus='Dokumentet er under redigering'])),
 	concat('Antall med annen status: ', count(descendant::dokumentbeskrivelse[not(dokumentstatus='Dokumentet er ferdigstilt')][not(dokumentstatus='Dokumentet er under redigering')])))
@@ -393,7 +393,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
 	concat('Antall dokumentobjekt: ', count(descendant::dokumentobjekt)))
 #STOP#
 
@@ -411,7 +411,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '), 
+//arkivdel/(concat('Arkivdel "' , tittel, '": '), 
 	concat('Antall saksparter: ', count(descendant::sakspart)))
 #STOP#
 
@@ -428,7 +428,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
         concat('Antall merknader på mappenivå: ', count(descendant::mappe/merknad)),
         concat('Antall merknader på registreringsnivå: ', count(descendant::registrering/merknad)),
         concat('Antall merknader på dokumentnivå: ', count(descendant::dokumentbeskrivelse/merknad)))
@@ -447,7 +447,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
                 concat('Antall kryssreferanser fra klasser: ', count(descendant::klasse/kryssreferanse/*)),
                 concat('Antall kryssreferanser fra mapper: ', count(descendant::mappe/kryssreferanse/*)),
                 concat('Antall kryssreferanser fra registreringer: ', count(descendant::registrering/kryssreferanse/*)))
@@ -466,7 +466,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
                 concat('Antall presedenser i saksmapper: ', count(descendant::mappe/presedens)),
                 concat('Antall presedenser i journalposter: ', count(descendant::registrering[type='journalpost']/presedens)))
 #STOP#
@@ -484,7 +484,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
                 concat('Antall korrespondanseparter: ', count(descendant::korrespondansepart/korrespondansepartNavn)),
                 concat('(', count(descendant::registrering[type='journalpost'][not(journalstatus='Utgår')]), ' journalposter eksl. journalstatus utgår)'))
 #STOP#
@@ -502,7 +502,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
       concat('Antall journalposter som avskrives av andre journalposter: ', count(descendant::registrering[type='journalpost']/avskrivning[string-length(referanseAvskrivesAvJournalpost)>0]/referanseAvskrivesAvJournalpost)),
       concat('Antall avskrevne journalposter: ', count(descendant::registrering[type='journalpost']/avskrivning[string-length(avskrivningsmaate)>0]/avskrivningsmaate)))
 #STOP#
@@ -520,7 +520,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '), 
+//arkivdel/(concat('Arkivdel "' , tittel, '": '), 
       concat('Antall journalposter med dokumentflyt: ', count(descendant::registrering[type='journalpost'][dokumentflyt])),
 	  concat('Antall dokumentflyt: ', count(descendant::registrering[type='journalpost']/dokumentflyt)))
 #STOP#
@@ -538,7 +538,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '":'),
+//arkivdel/(concat('Arkivdel "' , tittel, '":'),
       concat('Antall skjerminger i arkivdel: ', count(//arkivdel/skjerming)),
       concat('Antall skjerminger i klasser: ', count(descendant::klasse/skjerming)),
       concat('Antall skjerminger i mapper: ', count(descendant::mappe/skjerming)),
@@ -559,7 +559,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
       concat('Antall graderinger i arkivdel: ', count(//arkivdel/gradering)),
       concat('Antall graderinger i klasse: ', count(descendant::klasse/gradering)),
       concat('Antall graderinger i mappe: ', count(descendant::mappe/gradering)),
@@ -580,7 +580,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
       concat('Antall kassasjonsvedtak i arkivdel: ', count(//arkivdel/kassasjon)),
       concat('Antall kassasjonsvedtak i klasse: ', count(descendant::klasse/kassasjon)),
       concat('Antall kassasjonsvedtak i mappe: ', count(descendant::mappe/kassasjon)),
@@ -601,7 +601,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '), 
+//arkivdel/(concat('Arkivdel "' , tittel, '": '), 
       concat('Antall utførte kassasjoner: ', count(descendant::dokumentbeskrivelse/utfoertKassasjon)))
 #STOP#
 
@@ -618,7 +618,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
       concat('Antall konverterte dokumenter: ', count(descendant::konvertering)))
 #STOP#
 
@@ -635,7 +635,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-//arkivdel/(concat('Arkivdel "' , tittel , '": '),
+//arkivdel/(concat('Arkivdel "' , tittel, '": '),
       concat('Antall slettede dokumenter: ', count(descendant::sletting)))
 #STOP#
 
