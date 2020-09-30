@@ -137,10 +137,12 @@ namespace KDRS_Query
                        
             queryList = query.QueryList;
 
+            xPRunner.OnProgressUpdate += query_OnProgressUpdate;
             xPRunner.RunXPath(queryList, inFile);
 
             sqlQueryList = query.SqlQueryList;
 
+            xPRunner.OnProgressUpdate += query_OnProgressUpdate;
             foreach (SQL_Query sql_Query in sqlQueryList)
             {
                 if (sql_Query.JobEnabled.Equals("1"))
@@ -261,6 +263,6 @@ namespace KDRS_Query
     public static class Globals
     {
         public static readonly String toolName = "KDRS Query";
-        public static readonly String toolVersion = "0.3";
+        public static readonly String toolVersion = "0.4";
     }
 }
