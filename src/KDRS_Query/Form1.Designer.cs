@@ -44,6 +44,8 @@
             this.btnChooseReportTemplate = new System.Windows.Forms.Button();
             this.txtReportTempFile = new System.Windows.Forms.TextBox();
             this.btnReset = new System.Windows.Forms.Button();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.chkBox_cleanOut = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnInFile
@@ -54,7 +56,7 @@
             this.btnInFile.TabIndex = 0;
             this.btnInFile.Text = "Choose input folder";
             this.btnInFile.UseVisualStyleBackColor = true;
-            this.btnInFile.Click += new System.EventHandler(this.btnInFile_Click);
+            this.btnInFile.Click += new System.EventHandler(this.btnInFold_Click);
             // 
             // btnTrgtFold
             // 
@@ -118,6 +120,7 @@
             this.txtLogbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLogbox.BackColor = System.Drawing.SystemColors.HighlightText;
             this.txtLogbox.Location = new System.Drawing.Point(12, 201);
             this.txtLogbox.Multiline = true;
             this.txtLogbox.Name = "txtLogbox";
@@ -190,11 +193,27 @@
             this.btnReset.UseVisualStyleBackColor = true;
             this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            // 
+            // chkBox_cleanOut
+            // 
+            this.chkBox_cleanOut.AutoSize = true;
+            this.chkBox_cleanOut.Location = new System.Drawing.Point(14, 132);
+            this.chkBox_cleanOut.Name = "chkBox_cleanOut";
+            this.chkBox_cleanOut.Size = new System.Drawing.Size(86, 17);
+            this.chkBox_cleanOut.TabIndex = 15;
+            this.chkBox_cleanOut.Text = "Clean output";
+            this.chkBox_cleanOut.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.HighlightText;
             this.ClientSize = new System.Drawing.Size(706, 476);
+            this.Controls.Add(this.chkBox_cleanOut);
             this.Controls.Add(this.btnReset);
             this.Controls.Add(this.btnChooseReportTemplate);
             this.Controls.Add(this.txtReportTempFile);
@@ -234,6 +253,8 @@
         private System.Windows.Forms.Button btnChooseReportTemplate;
         private System.Windows.Forms.TextBox txtReportTempFile;
         private System.Windows.Forms.Button btnReset;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.CheckBox chkBox_cleanOut;
     }
 }
 
