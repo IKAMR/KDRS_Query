@@ -166,6 +166,7 @@
             // 
             // btnChooseReportTemplate
             // 
+            this.btnChooseReportTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnChooseReportTemplate.Location = new System.Drawing.Point(14, 361);
             this.btnChooseReportTemplate.Name = "btnChooseReportTemplate";
             this.btnChooseReportTemplate.Size = new System.Drawing.Size(143, 23);
@@ -176,7 +177,7 @@
             // 
             // txtReportTempFile
             // 
-            this.txtReportTempFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.txtReportTempFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtReportTempFile.Location = new System.Drawing.Point(163, 363);
             this.txtReportTempFile.Name = "txtReportTempFile";
@@ -185,6 +186,7 @@
             // 
             // btnReset
             // 
+            this.btnReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnReset.Location = new System.Drawing.Point(587, 155);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(107, 40);
