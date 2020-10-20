@@ -18,7 +18,7 @@ namespace KDRS_Query
         {
             Console.WriteLine("Reading queries");
 
-            using (StreamReader reader = new StreamReader(File.OpenRead(filename), Encoding.Default))
+            using (StreamReader reader = new StreamReader(File.OpenRead(filename)))
             {
                 String line;
                 while (((line = reader.ReadLine()) != null))
