@@ -263,6 +263,6 @@ namespace KDRS_Query
     public static class Globals
     {
         public static readonly String toolName = "KDRS Query";
-        public static readonly String toolVersion = "0.4";
+        public static readonly String toolVersion = "0.5";
     }
 }
