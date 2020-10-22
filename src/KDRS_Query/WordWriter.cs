@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Word;
-//using Microsoft.Office.Core;
 
 namespace KDRS_Query
 {

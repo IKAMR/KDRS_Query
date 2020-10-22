@@ -7,6 +7,8 @@ namespace KDRS_Query
 {
     class Query
     {
+        public delegate void ProgressUpdate(string statusMsg);
+        public event ProgressUpdate OnProgressUpdate;
 
         List<string> queryInfo = new List<string>();
 
@@ -16,7 +18,7 @@ namespace KDRS_Query
         // Extracts all query information from query text file into query list
         public string GetQuery(string filename)
         {
-            Console.WriteLine("Reading queries");
+            OnProgressUpdate?.Invoke("Reading queries");
 
             using (StreamReader reader = new StreamReader(File.OpenRead(filename)))
             {
@@ -59,6 +61,7 @@ namespace KDRS_Query
             }
 
             Console.WriteLine("All queries read");
+            OnProgressUpdate?.Invoke("All queries read");
 
             foreach (string s in queryInfo)
                 Console.WriteLine(s);

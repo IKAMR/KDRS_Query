@@ -31,30 +31,42 @@ namespace KDRS_Query
         //******************************************************************
         private void btnRunQ_Click(object sender, EventArgs e)
         {
-            txtLogbox.Text = "Running queries";
-            inFile = txtInFile.Text;
-            targetFolder = txtTrgtPath.Text;
+            if (String.IsNullOrEmpty(txtInFile.Text) || !Directory.Exists(txtInFile.Text))
+            {
+                txtLogbox.Text = "Please choose valid input folder";
+            } else if (String.IsNullOrEmpty(txtTrgtPath.Text) || !Directory.Exists(txtTrgtPath.Text))
+            {
+                txtLogbox.Text = "Please choose valid target folder";
+            }
+            else if (String.IsNullOrEmpty(txtQFile.Text) || !File.Exists(txtQFile.Text))
+            {
+                txtLogbox.Text = "Please choose valid query file";
 
-            cleanOut = chkBox_cleanOut.Checked;
+            }
+            else {
+                inFile = txtInFile.Text;
+                targetFolder = txtTrgtPath.Text;
 
-            queryList.Clear();
-            sqlQueryList.Clear();
+                cleanOut = chkBox_cleanOut.Checked;
 
-            btnChooseReportTemplate.Enabled = false;
-            btnInFile.Enabled = false;
-            btnQFile.Enabled = false;
-            btnReset.Enabled = false;
-            btnRunQ.Enabled = false;
-            btnTrgtFold.Enabled = false;
-            btnWriteReport.Enabled = false;
+                queryList.Clear();
+                sqlQueryList.Clear();
 
-            backgroundWorker1 = new BackgroundWorker();
-            backgroundWorker1.DoWork += backgroundWorker1_DoWork;
-            backgroundWorker1.ProgressChanged += backgroundWorker1_ProgressChanged;
-            backgroundWorker1.RunWorkerCompleted += backgroundWorker1_RunWorkerCompleted;
-            backgroundWorker1.WorkerReportsProgress = true;
-            backgroundWorker1.RunWorkerAsync();
+                btnChooseReportTemplate.Enabled = false;
+                btnInFile.Enabled = false;
+                btnQFile.Enabled = false;
+                btnReset.Enabled = false;
+                btnRunQ.Enabled = false;
+                btnTrgtFold.Enabled = false;
+                btnWriteReport.Enabled = false;
 
+                backgroundWorker1 = new BackgroundWorker();
+                backgroundWorker1.DoWork += backgroundWorker1_DoWork;
+                backgroundWorker1.ProgressChanged += backgroundWorker1_ProgressChanged;
+                backgroundWorker1.RunWorkerCompleted += backgroundWorker1_RunWorkerCompleted;
+                backgroundWorker1.WorkerReportsProgress = true;
+                backgroundWorker1.RunWorkerAsync();
+            }
         }
 
         //******************************************************************
@@ -120,7 +132,19 @@ namespace KDRS_Query
         //******************************************************************
         private void btnReset_Click(object sender, EventArgs e)
         {
+            queryList.Clear();
+            sqlQueryList.Clear();
 
+            targetFolder = String.Empty;
+            queryFile = String.Empty;
+            inFile = String.Empty;
+
+            txtQFile.Text = "";
+            txtInFile.Text = "";
+            txtLogbox.Text = "";
+            txtTrgtPath.Text = "";
+            txtReportTempFile.Text = "";
+            txtReportFile.Text = "";
         }
 
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
@@ -132,17 +156,20 @@ namespace KDRS_Query
 
             Console.WriteLine("Reading queries from: " + inFile);
 
+            query.OnProgressUpdate += query_OnProgressUpdate;
             query.GetQuery(queryFile);
-            backgroundWorker1.ReportProgress(0, "Queries read from file");
                        
             queryList = query.QueryList;
+
+            backgroundWorker1.ReportProgress(0, "Running queries:");
+
 
             xPRunner.OnProgressUpdate += query_OnProgressUpdate;
             xPRunner.RunXPath(queryList, inFile);
 
             sqlQueryList = query.SqlQueryList;
 
-            xPRunner.OnProgressUpdate += query_OnProgressUpdate;
+           // xPRunner.OnProgressUpdate += query_OnProgressUpdate;
             foreach (SQL_Query sql_Query in sqlQueryList)
             {
                 if (sql_Query.JobEnabled.Equals("1"))
@@ -193,7 +220,7 @@ namespace KDRS_Query
                 {
                     if (query.JobEnabled.Equals("1") || query.JobEnabled.Equals("2"))
                     {
-                        txtLogbox.AppendText("\r\n" + query.JobId);
+                        //txtLogbox.AppendText("\r\n" + query.JobId);
 
                         w.WriteLine(query.JobId);
 
@@ -224,7 +251,7 @@ namespace KDRS_Query
                 {
                     if (sqlQuery.JobEnabled.Equals("1"))
                     {
-                        txtLogbox.AppendText("\r\n" + sqlQuery.JobId);
+                      //  txtLogbox.AppendText("\r\n" + sqlQuery.JobId);
 
                         w.WriteLine(sqlQuery.JobId);
                         w.WriteLine(sqlQuery.JobEnabled);
@@ -249,11 +276,11 @@ namespace KDRS_Query
         }
 
         //******************************************************************
-        private void query_OnProgressUpdate(string queryId)
+        private void query_OnProgressUpdate(string statusMsg)
         {
             base.Invoke((System.Action)delegate
             {
-                backgroundWorker1.ReportProgress(0, queryId);
+                backgroundWorker1.ReportProgress(0, statusMsg);
             });
         }
 

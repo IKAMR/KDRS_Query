@@ -9,7 +9,7 @@ namespace KDRS_Query
 {
     class XPathQueryRunner
     {
-        public delegate void ProgressUpdate(string queryId);
+        public delegate void ProgressUpdate(string statusMsg);
         public event ProgressUpdate OnProgressUpdate;
 
         public void RunXPath(List<QueryClass> Xqueries, string sourceFolder)
