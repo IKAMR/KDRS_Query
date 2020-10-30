@@ -16,7 +16,7 @@ namespace KDRS_Query
         {
             foreach (XML_Query q in Xqueries)
             {
-                if (q.JobEnabled.Equals("1") || q.JobEnabled.Equals("2"))
+                if (q.JobEnabled.Equals("1") || q.JobEnabled.Equals("2") || q.JobEnabled.Equals("3"))
                 {
 
                     string xmlFileName = Path.Combine(sourceFolder, q.Source);
@@ -56,6 +56,7 @@ namespace KDRS_Query
             }
         }
 
+        //NOT IN USE!
         // Runs XPath from Xqueries on file spesified in query. Either 'arkivstruktur.xml, loependeJournal.xml, offentligJournal.xml or endringslogg.xml.
         public void RunXpath2(List<QueryClass> Xqueries, string sourceFolder)
         {

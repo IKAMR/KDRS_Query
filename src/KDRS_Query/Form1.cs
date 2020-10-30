@@ -23,6 +23,8 @@ namespace KDRS_Query
         string inFile;
         bool cleanOut;
 
+        List<string> singleQueryList = new List<string>();
+
         //******************************************************************
         public Form1()
         {
@@ -201,6 +203,14 @@ namespace KDRS_Query
             txtLogbox.AppendText("\r\nJob complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
 
+            if(singleQueryList.Count>0)
+            {
+                foreach (string name in singleQueryList) 
+                {
+                    txtLogbox.AppendText("\r\nSingle query printed to: " + name);
+                }
+            }
+
             btnChooseReportTemplate.Enabled = true;
             btnInFile.Enabled = true;
             btnQFile.Enabled = true;
@@ -255,7 +265,7 @@ namespace KDRS_Query
                     }
                     else if (query.JobEnabled.Equals("3"))
                     {
-
+                        WriteSingleToFile(query, outFile);
                     }
                 }
 
@@ -290,11 +300,12 @@ namespace KDRS_Query
 
         private void WriteSingleToFile(QueryClass query, string outFile)
         {
-            string singeToFileName = Path.GetFileNameWithoutExtension(outFile) + query.JobId + ".txt";
+            Console.WriteLine("Writing to single file!");
+            string singeToFileName = Path.Combine(Path.GetDirectoryName(outFile), Path.GetFileNameWithoutExtension(outFile) + "_" + query.JobId + ".txt");
 
-            using (File.Create(outFile)) { }
+            using (File.Create(singeToFileName)) { }
 
-            using (StreamWriter w = File.AppendText(outFile))
+            using (StreamWriter w = File.AppendText(singeToFileName))
             {
                 w.WriteLine("Query file: " + queryFile);
                 w.WriteLine("");
@@ -311,11 +322,13 @@ namespace KDRS_Query
                 w.WriteLine(query.Query);
                 w.WriteLine("");
                 w.WriteLine("Query result:");
-                w.WriteLine("");
 
                 w.WriteLine(query.Result);
                 w.WriteLine("=================================");
             }
+
+            singleQueryList.Add(singeToFileName);
+
         }
         //******************************************************************
         private void query_OnProgressUpdate(string statusMsg)
