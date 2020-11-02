@@ -272,7 +272,7 @@ concat('Arkivdel "' , a:tittel , '":', '\r\n',
 [XML_QUERY]
 
 job_id=C16
-job_enabled=2 
+job_enabled=3 
 job_name= Antall registreringer for hvert år
 job_description= Journalposttyper og journalposttilknytning i arkivstrukturen (sakarkiver)
 

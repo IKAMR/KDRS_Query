@@ -12,6 +12,8 @@ namespace KDRS_Query
         List<QueryClass> queryList = new List<QueryClass>();
         List<SQL_Query> sqlQueryList = new List<SQL_Query>();
 
+        List<QueryClass> queryListExtra = new List<QueryClass>();
+
         Query query = new Query();
         XPathQueryRunner xPRunner = new XPathQueryRunner();
         MYSQL_Runner sqlRunner = new MYSQL_Runner();
@@ -20,6 +22,8 @@ namespace KDRS_Query
         string queryFile;
         string inFile;
         bool cleanOut;
+
+        List<string> singleQueryList = new List<string>();
 
         //******************************************************************
         public Form1()
@@ -34,7 +38,8 @@ namespace KDRS_Query
             if (String.IsNullOrEmpty(txtInFile.Text) || !Directory.Exists(txtInFile.Text))
             {
                 txtLogbox.Text = "Please choose valid input folder";
-            } else if (String.IsNullOrEmpty(txtTrgtPath.Text) || !Directory.Exists(txtTrgtPath.Text))
+            }
+            else if (String.IsNullOrEmpty(txtTrgtPath.Text) || !Directory.Exists(txtTrgtPath.Text))
             {
                 txtLogbox.Text = "Please choose valid target folder";
             }
@@ -43,7 +48,8 @@ namespace KDRS_Query
                 txtLogbox.Text = "Please choose valid query file";
 
             }
-            else {
+            else
+            {
                 inFile = txtInFile.Text;
                 targetFolder = txtTrgtPath.Text;
 
@@ -124,7 +130,8 @@ namespace KDRS_Query
                 writer.WriteToDoc(defaultFileName, queryList, reportFilePath);
 
                 txtLogbox.AppendText("\r\nReport complete. File saved at: " + reportFilePath);
-            }else
+            }
+            else
                 txtLogbox.AppendText("\r\nReport file does not exist.");
         }
 
@@ -146,6 +153,7 @@ namespace KDRS_Query
             txtReportTempFile.Text = "";
             txtReportFile.Text = "";
         }
+        //******************************************************************
 
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
@@ -158,7 +166,7 @@ namespace KDRS_Query
 
             query.OnProgressUpdate += query_OnProgressUpdate;
             query.GetQuery(queryFile);
-                       
+
             queryList = query.QueryList;
 
             backgroundWorker1.ReportProgress(0, "Running queries:");
@@ -169,7 +177,7 @@ namespace KDRS_Query
 
             sqlQueryList = query.SqlQueryList;
 
-           // xPRunner.OnProgressUpdate += query_OnProgressUpdate;
+            // xPRunner.OnProgressUpdate += query_OnProgressUpdate;
             foreach (SQL_Query sql_Query in sqlQueryList)
             {
                 if (sql_Query.JobEnabled.Equals("1"))
@@ -195,6 +203,14 @@ namespace KDRS_Query
             txtLogbox.AppendText("\r\nJob complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
 
+            if(singleQueryList.Count>0)
+            {
+                foreach (string name in singleQueryList) 
+                {
+                    txtLogbox.AppendText("\r\nSingle query printed to: " + name);
+                }
+            }
+
             btnChooseReportTemplate.Enabled = true;
             btnInFile.Enabled = true;
             btnQFile.Enabled = true;
@@ -203,6 +219,7 @@ namespace KDRS_Query
             btnTrgtFold.Enabled = true;
             btnWriteReport.Enabled = true;
         }
+        //******************************************************************
 
         private void writeResultsToFile(string outFile, bool cleanOut)
         {
@@ -238,12 +255,17 @@ namespace KDRS_Query
                             w.WriteLine("Query result:");
                         }
                         else
-                        { w.WriteLine("");
+                        {
+                            w.WriteLine("");
 
                         }
 
                         w.WriteLine(query.Result);
                         w.WriteLine("=================================");
+                    }
+                    else if (query.JobEnabled.Equals("3"))
+                    {
+                        WriteSingleToFile(query, outFile);
                     }
                 }
 
@@ -251,7 +273,7 @@ namespace KDRS_Query
                 {
                     if (sqlQuery.JobEnabled.Equals("1"))
                     {
-                      //  txtLogbox.AppendText("\r\n" + sqlQuery.JobId);
+                        //  txtLogbox.AppendText("\r\n" + sqlQuery.JobId);
 
                         w.WriteLine(sqlQuery.JobId);
                         w.WriteLine(sqlQuery.JobEnabled);
@@ -274,7 +296,40 @@ namespace KDRS_Query
                 }
             }
         }
+        //******************************************************************
 
+        private void WriteSingleToFile(QueryClass query, string outFile)
+        {
+            Console.WriteLine("Writing to single file!");
+            string singeToFileName = Path.Combine(Path.GetDirectoryName(outFile), Path.GetFileNameWithoutExtension(outFile) + "_" + query.JobId + ".txt");
+
+            using (File.Create(singeToFileName)) { }
+
+            using (StreamWriter w = File.AppendText(singeToFileName))
+            {
+                w.WriteLine("Query file: " + queryFile);
+                w.WriteLine("");
+                w.WriteLine("=================================");
+                w.WriteLine("");
+                w.WriteLine(query.JobId);
+                w.WriteLine(query.JobEnabled);
+                w.WriteLine(query.JobName);
+                w.WriteLine(query.JobDescription);
+                w.WriteLine(query.System);
+                w.WriteLine(query.SubSystem);
+                w.WriteLine(query.Source);
+                w.WriteLine(query.Target);
+                w.WriteLine(query.Query);
+                w.WriteLine("");
+                w.WriteLine("Query result:");
+
+                w.WriteLine(query.Result);
+                w.WriteLine("=================================");
+            }
+
+            singleQueryList.Add(singeToFileName);
+
+        }
         //******************************************************************
         private void query_OnProgressUpdate(string statusMsg)
         {
@@ -290,6 +345,6 @@ namespace KDRS_Query
     public static class Globals
     {
         public static readonly String toolName = "KDRS Query";
-        public static readonly String toolVersion = "0.5";
+        public static readonly String toolVersion = "0.6";
     }
 }
