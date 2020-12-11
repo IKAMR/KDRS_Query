@@ -1,6 +1,6 @@
 _PARAMETERS_
 query_name=Noark 5 Standard alene
-query_date=2020-11-27
+query_date=2020-12-10
 query_description=Kjører manuelt aktiverte job_enabled <> 0 Noark 5-queries [QA må gjøres mot xsd skjemaer Noark 5 v3.1, 4.0 & 5.0]
 
 query_type=Noark5
@@ -913,7 +913,7 @@ source=arkivstruktur.xml
 target=noark5_analyse_{dt}.log
 
 #START#
-"N5.25 Start- og sluttdato for dokumentene pr. arkivdel", 
+"N5.27 Start- og sluttdato for dokumentene pr. arkivdel", 
 concat("Eldste dokument opprettet: ", min(//dokumentbeskrivelse/opprettetDato/xs:dateTime(.))),
 concat("Nyeste dokument opprettet: ", max(//dokumentbeskrivelse/opprettetDato/xs:dateTime(.))), 
 " ",
@@ -1183,6 +1183,32 @@ concat('Arkivnotater: ', count(//registrering[@xsi:type='arkivnotat']/dokumentfl
 concat('Alle: ', count(descendant::registrering/dokumentflyt)), 
 concat('Journalposter: ', count(descendant::registrering[@xsi:type='journalpost'][dokumentflyt])), 
 concat('Arkivnotater: ', count(descendant::registrering[@xsi:type='arkivnotat']/dokumentflyt)), 
+" ")
+#STOP#
+
+[XML_QUERY]
+
+job_id=F07.01
+job_enabled=1 
+job_name=Antall dokumentflyter pr. arkivdel (generisk)
+job_description=N5.41
+
+system=noark5 
+subsystem=
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+"N5.41 Antall dokumentflyter pr. arkivdel (generisk): ", 
+concat('Alle: ', count(//registrering/dokumentflyt)), 
+concat('Journalposter: ', count(//registrering[@xsi:type='journalpost'][dokumentflyt])), 
+concat('Arkivnotater: ', count(//registrering[@xsi:type='arkivnotat']/dokumentflyt)), 
+" ", 
+//arkivdel/(concat('Arkivdel "' , tittel, '": '), 
+concat('Alle: ', count(descendant::registrering/dokumentflyt)),
+for $regType in distinct-values(//registrering/@xsi:type)
+return
+concat($regType, ': ', count(descendant::registrering[@xsi:type=$regType][dokumentflyt])), 
 " ")
 #STOP#
 
