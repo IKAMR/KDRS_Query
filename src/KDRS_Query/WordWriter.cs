@@ -9,31 +9,39 @@ namespace KDRS_Query
         // Writes query results to report template. Results are written to tables with name matching query jobId.
         public void WriteToDoc(string fileName, List<QueryClass> queryList, string reportFileName)
         {
-            Application wordApp = new Application();
-            Documents documents = wordApp.Documents;
-            Document document = documents.Open(fileName);
-
-            Tables tables = document.Tables;
-
-            foreach(QueryClass q in queryList)
+        
+                Application wordApp = new Application();
+                Documents documents = wordApp.Documents;
+                Document document = documents.Open(fileName);
+            try
             {
-                string tableName = "tbl_" + q.JobId;
-                Console.WriteLine("table: " + tableName);
-                Table table = getTable(tableName, tables);
-                if (table != null && q.JobEnabled.Equals("1"))
+                Tables tables = document.Tables;
+
+                foreach (QueryClass q in queryList)
                 {
-                    table.Columns[2].Cells[3].Range.Text = q.Result.Replace("\r\n", "\v");
+                    string tableName = "tbl_" + q.JobId;
+                    Console.WriteLine("table: " + tableName);
+                    Table table = getTable(tableName, tables);
+                    if (table != null && q.JobEnabled.Equals("1"))
+                    {
+                        table.Columns[2].Cells[3].Range.Text = q.Result.Replace("\r\n", "\v");
+                    }
                 }
+
+                if (String.IsNullOrEmpty(reportFileName))
+                    reportFileName = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\testReport.docx";
+
+                document.SaveAs2(reportFileName);
             }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally {
+                documents.Close();
 
-            if (String.IsNullOrEmpty(reportFileName))
-                reportFileName = @"C:\developer\c#\kdrs_query\KDRS_Query\doc\testReport.docx";
-
-            document.SaveAs2(reportFileName);
-
-            documents.Close();
-
-            wordApp.Quit();
+                wordApp.Quit(); 
+            }
         }
 
         // Returns table with spesific title.

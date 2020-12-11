@@ -202,6 +202,8 @@
             // chkBox_cleanOut
             // 
             this.chkBox_cleanOut.AutoSize = true;
+            this.chkBox_cleanOut.Checked = true;
+            this.chkBox_cleanOut.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkBox_cleanOut.Location = new System.Drawing.Point(14, 132);
             this.chkBox_cleanOut.Name = "chkBox_cleanOut";
             this.chkBox_cleanOut.Size = new System.Drawing.Size(86, 17);

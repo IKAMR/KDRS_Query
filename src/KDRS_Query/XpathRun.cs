@@ -14,6 +14,7 @@ namespace KDRS_Query
 
         public void RunXPath(List<QueryClass> Xqueries, string sourceFolder)
         {
+            Dictionary<string, XmlDocument> sources = new Dictionary<string, XmlDocument>();
             foreach (XML_Query q in Xqueries)
             {
                 if (q.JobEnabled.Equals("1") || q.JobEnabled.Equals("2") || q.JobEnabled.Equals("3"))
@@ -25,7 +26,16 @@ namespace KDRS_Query
                     Processor processor = new Processor();
 
                     XmlDocument inputDoc = new XmlDocument();
-                    inputDoc.Load(xmlFileName);
+                   // inputDoc.Load(xmlFileName);
+
+                    // From Tormod Engebu
+                    if (!sources.ContainsKey(q.Source))
+                    {
+                        XmlDocument newDoc = new XmlDocument();
+                        newDoc.Load(xmlFileName);
+                        sources.Add(q.Source, newDoc);
+                    }
+                    inputDoc = sources[q.Source];
 
                     XdmNode xmlDoc = processor.NewDocumentBuilder().Build(new XmlNodeReader(inputDoc));
 
@@ -49,7 +59,7 @@ namespace KDRS_Query
                     catch (Exception e)
                     {
                         OnProgressUpdate?.Invoke("ERROR: " + q.JobId);
-                        q.Result = "ERROR 1, unable to compile: " + q.Query;
+                        q.Result = e.Message;
                         Console.WriteLine(e.Message);
                     }
                 }

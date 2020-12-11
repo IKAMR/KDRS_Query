@@ -29,7 +29,13 @@ namespace KDRS_Query
         public Form1()
         {
             InitializeComponent();
+
             Text = Globals.toolName + " " + Globals.toolVersion;
+
+            query.OnProgressUpdate += query_OnProgressUpdate;
+
+            xPRunner.OnProgressUpdate += query_OnProgressUpdate;
+
         }
 
         //******************************************************************
@@ -43,13 +49,14 @@ namespace KDRS_Query
             {
                 txtLogbox.Text = "Please choose valid target folder";
             }
-            else if (String.IsNullOrEmpty(txtQFile.Text) || !File.Exists(txtQFile.Text))
+            else if (String.IsNullOrEmpty(txtQFile.Text) || !File.Exists(txtQFile.Text) || Path.GetExtension(txtQFile.Text) != ".txt")
             {
                 txtLogbox.Text = "Please choose valid query file";
 
             }
             else
             {
+                txtLogbox.Text = "";
                 inFile = txtInFile.Text;
                 targetFolder = txtTrgtPath.Text;
 
@@ -124,15 +131,21 @@ namespace KDRS_Query
             string defaultFileName = txtReportTempFile.Text;
 
             //    @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.2.0_2020-01-22.docx";
-
-            if (File.Exists(defaultFileName))
+            try
             {
-                writer.WriteToDoc(defaultFileName, queryList, reportFilePath);
+                if (File.Exists(defaultFileName))
+                {
+                    writer.WriteToDoc(defaultFileName, queryList, reportFilePath);
 
-                txtLogbox.AppendText("\r\nReport complete. File saved at: " + reportFilePath);
+                    txtLogbox.AppendText("\r\nReport complete. File saved at: " + reportFilePath);
+                }
+                else
+                    txtLogbox.AppendText("\r\nReport file does not exist.");
             }
-            else
-                txtLogbox.AppendText("\r\nReport file does not exist.");
+            catch (Exception ex)
+            {
+                txtLogbox.AppendText("\r\n" + ex.Message);
+            }
         }
 
 
@@ -164,7 +177,6 @@ namespace KDRS_Query
 
             Console.WriteLine("Reading queries from: " + inFile);
 
-            query.OnProgressUpdate += query_OnProgressUpdate;
             query.GetQuery(queryFile);
 
             queryList = query.QueryList;
@@ -172,7 +184,6 @@ namespace KDRS_Query
             backgroundWorker1.ReportProgress(0, "Running queries:");
 
 
-            xPRunner.OnProgressUpdate += query_OnProgressUpdate;
             xPRunner.RunXPath(queryList, inFile);
 
             sqlQueryList = query.SqlQueryList;
@@ -197,10 +208,12 @@ namespace KDRS_Query
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             string outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + ".txt");
+            if(cleanOut)
+                outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + "_clean.txt");
 
             writeResultsToFile(outFile, cleanOut);
 
-            txtLogbox.AppendText("\r\nJob complete.");
+            txtLogbox.AppendText("\r\nQueries complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
 
             if(singleQueryList.Count>0)
@@ -210,6 +223,10 @@ namespace KDRS_Query
                     txtLogbox.AppendText("\r\nSingle query printed to: " + name);
                 }
             }
+
+            txtLogbox.AppendText("\r\n");
+            txtLogbox.AppendText("\r\nJob complete.");
+
 
             btnChooseReportTemplate.Enabled = true;
             btnInFile.Enabled = true;
@@ -345,6 +362,6 @@ namespace KDRS_Query
     public static class Globals
     {
         public static readonly String toolName = "KDRS Query";
-        public static readonly String toolVersion = "0.6";
+        public static readonly String toolVersion = "0.7";
     }
 }
