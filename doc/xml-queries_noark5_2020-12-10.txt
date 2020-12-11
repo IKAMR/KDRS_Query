@@ -916,7 +916,7 @@ target=noark5_analyse_{dt}.log
 "N5.27 Start- og sluttdato for dokumentene pr. arkivdel", 
 concat("Eldste dokument opprettet: ", min(//dokumentbeskrivelse/opprettetDato/xs:dateTime(.))),
 concat("Nyeste dokument opprettet: ", max(//dokumentbeskrivelse/opprettetDato/xs:dateTime(.))), 
-" ",
+" ",Wrong header on C25 (refered N5.25 instead of N5.27)
 //arkivdel/(concat("Arkivdel '" , tittel ), 
 concat("Eldste dokument opprettet: ", min(descendant::dokumentbeskrivelse/opprettetDato/xs:dateTime(.))),
 concat("Nyeste dokument opprettet: ", max(descendant::dokumentbeskrivelse/opprettetDato/xs:dateTime(.))), 
@@ -940,7 +940,7 @@ target=noark5_analyse_{dt}.log
 concat("Alle sakspart: ", count(//sakspart)),  
 " ", 
 //arkivdel/(concat(
-'sakspark: ', count(descendant::sakspart), 
+'Sakspart: ', count(descendant::sakspart), 
 ',   Arkivdel ' , tittel))
 #STOP#
 
