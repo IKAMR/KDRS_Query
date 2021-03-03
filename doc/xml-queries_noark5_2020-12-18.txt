@@ -577,11 +577,36 @@ target=noark5_analyse_{dt}.log
 
 #START#
 "N5.18 Antall registreringer pr. akivdel og år: ", 
+(" ", 'Totalt: '),
+sort(for $v in distinct-values(//registrering/opprettetDato/substring-before(., "-"))
+return
+(concat($v, ": ", count(index-of(//registrering/opprettetDato/substring-before(., "-"), $v))))),
 for $a in //arkivdel
 return 
 (" ", concat('Arkivdel ' , $a/tittel, ': ') , sort(for $v in distinct-values($a//registrering/opprettetDato/substring-before(., "-"))
 return
 (concat($v, ": ", count(index-of($a//registrering/opprettetDato/substring-before(., "-"), $v))))))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C16.01
+job_enabled=2 
+job_name=Antall registreringer pr. arkivdel og år, basert på journaldato
+job_description=N5.18 [2][Hoppes over av rapportgenerering]
+
+system=noark5 
+subsystem=
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+"N5.18 Antall registreringer pr. akivdel og år: ", 
+for $a in //arkivdel
+return 
+(" ", concat('Arkivdel ' , $a/tittel, ': ') , sort(for $v in distinct-values($a//registrering/journaldato/substring-before(., "-"))
+return
+(concat($v, ": ", count(index-of($a//registrering/journaldato/substring-before(., "-"), $v))))))
 #STOP#
 
 [XML_QUERY]
@@ -916,7 +941,7 @@ target=noark5_analyse_{dt}.log
 "N5.27 Start- og sluttdato for dokumentene pr. arkivdel", 
 concat("Eldste dokument opprettet: ", min(//dokumentbeskrivelse/opprettetDato/xs:dateTime(.))),
 concat("Nyeste dokument opprettet: ", max(//dokumentbeskrivelse/opprettetDato/xs:dateTime(.))), 
-" ",Wrong header on C25 (refered N5.25 instead of N5.27)
+" ",
 //arkivdel/(concat("Arkivdel '" , tittel ), 
 concat("Eldste dokument opprettet: ", min(descendant::dokumentbeskrivelse/opprettetDato/xs:dateTime(.))),
 concat("Nyeste dokument opprettet: ", max(descendant::dokumentbeskrivelse/opprettetDato/xs:dateTime(.))), 
@@ -940,7 +965,7 @@ target=noark5_analyse_{dt}.log
 concat("Alle sakspart: ", count(//sakspart)),  
 " ", 
 //arkivdel/(concat(
-'Sakspart: ', count(descendant::sakspart), 
+'sakspark: ', count(descendant::sakspart), 
 ',   Arkivdel ' , tittel))
 #STOP#
 

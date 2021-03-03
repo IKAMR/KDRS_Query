@@ -577,11 +577,36 @@ target=noark5_analyse_{dt}.log
 
 #START#
 "N5.18 Antall registreringer pr. akivdel og år: ", 
+(" ", 'Totalt: '),
+sort(for $v in distinct-values(//registrering/opprettetDato/substring-before(., "-"))
+return
+(concat($v, ": ", count(index-of(//registrering/opprettetDato/substring-before(., "-"), $v))))),
 for $a in //arkivdel
 return 
 (" ", concat('Arkivdel ' , $a/tittel, ': ') , sort(for $v in distinct-values($a//registrering/opprettetDato/substring-before(., "-"))
 return
 (concat($v, ": ", count(index-of($a//registrering/opprettetDato/substring-before(., "-"), $v))))))
+#STOP#
+
+[XML_QUERY]
+
+job_id=C16.01
+job_enabled=0 
+job_name=Antall registreringer pr. arkivdel og år, basert på journaldato
+job_description=N5.18 [2][Hoppes over av rapportgenerering]
+
+system=noark5 
+subsystem=
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START#
+"N5.18 Antall registreringer pr. akivdel og år: ", 
+for $a in //arkivdel
+return 
+(" ", concat('Arkivdel ' , $a/tittel, ': ') , sort(for $v in distinct-values($a//registrering/journaldato/substring-before(., "-"))
+return
+(concat($v, ": ", count(index-of($a//registrering/journaldato/substring-before(., "-"), $v))))))
 #STOP#
 
 [XML_QUERY]
