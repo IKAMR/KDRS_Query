@@ -25,7 +25,7 @@ namespace KDRS_Query
 
                     Processor processor = new Processor();
 
-                    XmlDocument inputDoc = new XmlDocument();
+                    XmlDocument inputDoc;
                    // inputDoc.Load(xmlFileName);
 
                     // From Tormod Engebu
