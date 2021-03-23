@@ -113,13 +113,21 @@ namespace KDRS_Query
             if (dr == DialogResult.OK)
                 txtReportTempFile.Text = openFileDialog1.FileName;
         }
+        //******************************************************************
+
+        private void btnChooseLogTemplate_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = openFileDialog1.ShowDialog();
+            if (dr == DialogResult.OK)
+                txtLogTempFile.Text = openFileDialog1.FileName;
+        }
 
         //******************************************************************
         private void btnWriteReport_Click(object sender, EventArgs e)
         {
             txtLogbox.AppendText("\r\nWriting report.");
 
-            string reportFileName = "testReport.docx";
+            string reportFileName = "15xx_nnn_D_noark5_log.docx";
 
             if (!String.IsNullOrEmpty(txtReportFile.Text))
                 reportFileName = txtReportFile.Text;
@@ -141,6 +149,39 @@ namespace KDRS_Query
                 }
                 else
                     txtLogbox.AppendText("\r\nReport file does not exist.");
+            }
+            catch (Exception ex)
+            {
+                txtLogbox.AppendText("\r\n" + ex.Message);
+            }
+        }
+        //******************************************************************
+
+        private void btnWriteToLog_Click(object sender, EventArgs e)
+        {
+            txtLogbox.AppendText("\r\nWriting log.");
+            string logFileName = "test_log_noark5.xlsx";
+
+            //if (!String.IsNullOrEmpty(txtReportFile.Text))
+             //   logFileName = txtReportFile.Text;
+
+            string logFilePath = Path.Combine(targetFolder, logFileName);
+
+            ExcelWriter exWriter = new ExcelWriter();
+
+            string defaultFileName = txtLogTempFile.Text;
+            //    @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.2.0_2020-01-22.docx";
+            
+            try
+            {
+                if (File.Exists(defaultFileName))
+                {
+                    exWriter.WriteToLog(defaultFileName, queryList, logFilePath);
+
+                    txtLogbox.AppendText("\r\nLog complete. File saved at: " + logFilePath);
+                }
+                else
+                    txtLogbox.AppendText("\r\nLog template file does not exist.");
             }
             catch (Exception ex)
             {
@@ -355,6 +396,7 @@ namespace KDRS_Query
                 backgroundWorker1.ReportProgress(0, statusMsg);
             });
         }
+
 
     }
 
