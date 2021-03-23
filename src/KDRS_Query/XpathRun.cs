@@ -59,7 +59,7 @@ namespace KDRS_Query
                     catch (Exception e)
                     {
                         OnProgressUpdate?.Invoke("ERROR: " + q.JobId);
-                        q.Result = e.Message;
+                        q.Result = "ERROR 1, unable to compile: " + q.Query;
                         Console.WriteLine(e.Message);
                     }
                 }
