@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
@@ -24,6 +26,8 @@ namespace KDRS_Query
         bool cleanOut;
 
         List<string> singleQueryList = new List<string>();
+
+        Hashtable myHashtable;
 
         //******************************************************************
         public Form1()
@@ -159,6 +163,8 @@ namespace KDRS_Query
 
         private void btnWriteToLog_Click(object sender, EventArgs e)
         {
+            CheckExcellProcesses();
+
             txtLogbox.AppendText("\r\nWriting log.");
             string logFileName = "test_log_noark5.xlsx";
 
@@ -186,6 +192,11 @@ namespace KDRS_Query
             catch (Exception ex)
             {
                 txtLogbox.AppendText("\r\n" + ex.Message);
+                KillExcel();
+            }
+            finally
+            {
+                KillExcel();
             }
         }
 
@@ -397,6 +408,33 @@ namespace KDRS_Query
             });
         }
 
+        private void KillExcel()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+
+            // check to kill the right process
+            foreach (Process ExcelProcess in AllProcesses)
+            {
+                if (myHashtable.ContainsKey(ExcelProcess.Id) == false)
+                    ExcelProcess.Kill();
+            }
+
+            AllProcesses = null;
+        }
+        //----------------------------------------------------------------------------------------------
+
+        private void CheckExcellProcesses()
+        {
+            Process[] AllProcesses = Process.GetProcessesByName("excel");
+            myHashtable = new Hashtable();
+            int iCount = 0;
+
+            foreach (Process ExcelProcess in AllProcesses)
+            {
+                myHashtable.Add(ExcelProcess.Id, iCount);
+                iCount = iCount + 1;
+            }
+        }
 
     }
 

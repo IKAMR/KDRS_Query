@@ -51,7 +51,8 @@ namespace KDRS_Query
             finally
             {
 
-
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
 
 
                 Marshal.ReleaseComObject(idRange);
@@ -59,11 +60,11 @@ namespace KDRS_Query
                 Marshal.ReleaseComObject(xlWorksheets);
 
                 xlWorkBook.Close();
+                Marshal.ReleaseComObject(xlWorkBook);
 
                 xlApp1.Quit();
+                Marshal.ReleaseComObject(xlApp1);
 
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
             }
 
 
