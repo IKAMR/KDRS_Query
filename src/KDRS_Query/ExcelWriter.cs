@@ -7,6 +7,7 @@ namespace KDRS_Query
 {
     class ExcelWriter
     {
+        // Writes queries to the excel template log file.
         public void WriteToLog(string filename, List<QueryClass> queryList, string logFileName)
         {
             Console.WriteLine("writing log");
@@ -66,10 +67,9 @@ namespace KDRS_Query
                 Marshal.ReleaseComObject(xlApp1);
 
             }
-
-
         }
 
+        // Get coordinates of cell with content.
         public int getCell(string cellContent, Range column)
         {
 
