@@ -68,6 +68,7 @@ namespace KDRS_Query
 
             }
         }
+        //******************************************************************
 
         // Get coordinates of cell with content.
         public int getCell(string cellContent, Range column)

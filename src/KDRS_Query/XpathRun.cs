@@ -11,6 +11,8 @@ namespace KDRS_Query
     {
         public delegate void ProgressUpdate(string statusMsg);
         public event ProgressUpdate OnProgressUpdate;
+        
+        //******************************************************************
 
         public void RunXPath(List<QueryClass> Xqueries, string sourceFolder)
         {
@@ -65,6 +67,22 @@ namespace KDRS_Query
                 }
             }
         }
+
+        //******************************************************************
+
+        public void GetSiardTableNames()
+        {
+
+        }
+
+        //******************************************************************
+
+        public void EditSiardQuery(QueryClass siardQuery, string siardTable)
+        {
+            string tableName = siardQuery.Source;
+            siardQuery.Query.Replace(tableName, siardTable);
+        }
+        //******************************************************************
 
         //NOT IN USE!
         // Runs XPath from Xqueries on file spesified in query. Either 'arkivstruktur.xml, loependeJournal.xml, offentligJournal.xml or endringslogg.xml.

@@ -85,7 +85,6 @@ namespace KDRS_Query
                 backgroundWorker1.RunWorkerAsync();
             }
         }
-
         //******************************************************************
         private void btnInFold_Click(object sender, EventArgs e)
         {
@@ -93,7 +92,6 @@ namespace KDRS_Query
             if (dr == DialogResult.OK)
                 txtInFile.Text = folderBrowserDialog1.SelectedPath;
         }
-
         //******************************************************************
         private void btnTrgtFold_Click(object sender, EventArgs e)
         {
@@ -101,7 +99,6 @@ namespace KDRS_Query
             if (dr == DialogResult.OK)
                 txtTrgtPath.Text = folderBrowserDialog1.SelectedPath;
         }
-
         //******************************************************************
         private void btnQFile_Click(object sender, EventArgs e)
         {
@@ -109,7 +106,6 @@ namespace KDRS_Query
             if (dr == DialogResult.OK)
                 txtQFile.Text = openFileDialog1.FileName;
         }
-
         //******************************************************************
         private void btnChooseReportTemplate_Click(object sender, EventArgs e)
         {
@@ -125,7 +121,6 @@ namespace KDRS_Query
             if (dr == DialogResult.OK)
                 txtLogTempFile.Text = openFileDialog1.FileName;
         }
-
         //******************************************************************
         private void btnWriteReport_Click(object sender, EventArgs e)
         {
@@ -199,8 +194,6 @@ namespace KDRS_Query
                 KillExcel();
             }
         }
-
-
         //******************************************************************
         private void btnReset_Click(object sender, EventArgs e)
         {
@@ -315,7 +308,7 @@ namespace KDRS_Query
                             w.WriteLine(query.JobEnabled);
                             w.WriteLine(query.JobName);
                             w.WriteLine(query.JobDescription);
-                            w.WriteLine(query.System);
+                            w.WriteLine(query.SystemType);
                             w.WriteLine(query.SubSystem);
                             w.WriteLine(query.Source);
                             w.WriteLine(query.Target);
@@ -348,7 +341,7 @@ namespace KDRS_Query
                         w.WriteLine(sqlQuery.JobEnabled);
                         w.WriteLine(sqlQuery.JobName);
                         w.WriteLine(sqlQuery.JobDescription);
-                        w.WriteLine(sqlQuery.System);
+                        w.WriteLine(sqlQuery.SystemType);
                         w.WriteLine(sqlQuery.SubSystem);
                         w.WriteLine(sqlQuery.Source);
                         w.WriteLine(sqlQuery.Target);
@@ -384,7 +377,7 @@ namespace KDRS_Query
                 w.WriteLine(query.JobEnabled);
                 w.WriteLine(query.JobName);
                 w.WriteLine(query.JobDescription);
-                w.WriteLine(query.System);
+                w.WriteLine(query.SystemType);
                 w.WriteLine(query.SubSystem);
                 w.WriteLine(query.Source);
                 w.WriteLine(query.Target);
@@ -442,6 +435,6 @@ namespace KDRS_Query
     public static class Globals
     {
         public static readonly String toolName = "KDRS Query";
-        public static readonly String toolVersion = "0.8";
+        public static readonly String toolVersion = "0.9";
     }
 }

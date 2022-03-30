@@ -43,6 +43,8 @@ namespace KDRS_Query
                 wordApp.Quit(); 
             }
         }
+        
+        //******************************************************************
 
         // Returns table with spesific title.
         public Table getTable(string tableTitle, Tables tables)
