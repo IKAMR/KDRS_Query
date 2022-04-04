@@ -1,0 +1,218 @@
+_PARAMETERS_
+query_name=SIARD query tests
+query_date=2022-02-16
+query_description=SIARD metadata.xml analyse from FFKK_nnn <system> of table[n].xml counting number columns not NULL (elements c1, c2 etc. exists in the table[n].xml rows)
+
+query_type=Siard
+query_subtype=2.1,2.0,1.0
+query_version=0.2
+
+tool_name=XML Queries
+tool_version=0.8
+tool_info=[Standard rapportnavn resultat: "kdrs_query_results_uttrekk.txt". Seksjoner: XML_QUERY og SQL_QUERY. Parameter job_enabled = 0 Kjøres ikke, = 1 Inkluderes i rapport hvis feltet aktivert i rapport, =2 Ikke inkludert i rapport, =3 Inkludert i rapport, men lagret til egen fil (postfix filnavn job_id).]
+
+[XML_QUERY]
+
+job_id=S01 
+job_enabled=1 
+job_name=metadata.xml
+job_description=S01 metadata.xml analyse
+
+system=siard
+subsystem=
+source=metadata.xml
+target=siard_analyse_{dt}.log
+
+#START#
+concat("S01 metadata.xml analyse: ", "SIARD version = ", /siardArchive/@version),
+/siardArchive/( 
+" ",
+concat("dbname: ", dbname/text()),
+concat("description: ", description/text() ), 
+" ", 
+concat("archiver: ", archiver/text(), ", archiverContact: ", archiverContact/text() ), 
+concat("dataOwner: ", dataOwner/text(), ", dataOriginTimespan: ", dataOriginTimespan/text() ),
+" ",
+concat("lobFolder: ", lobFolder/text() ), 
+concat("producerApplication: ", producerApplication/text() ), 
+concat("archivalDate: ", archivalDate/text() ), 
+concat("clientMachine: ", clientMachine/text() ), 
+concat("databaseUser: ", databaseUser/text() ), 
+" " ,
+concat("databaseProduct: ", databaseProduct/text() ), 
+" " ,
+concat("connection: ", connection/text() ) ), 
+" ", 
+concat("Databasen inneholder ", count(//schema), " schema(s), ", count(//table), " tables"), 
+concat(count(//primaryKey), " primaryKey (Counts Tables with a Primary key)"), 
+concat(count(//foreignKeys), " foreignKeys (Counts Tables with 1 or more Foreign keys)"), 
+concat(count(//foreignKey), " foreignKey (Counts total number of Foreign keys all Tables)"), 
+concat(count(//candidateKeys), " candidateKeys (Counts Tables with 1 or more Candidate keys)"), 
+concat(count(//candidateKey), " candidateKey (Counts total number of Candidate keys all Tables)"), 
+" ", 
+//table/concat(name/text(), ", ", 
+rows/text(), " rows/", count(columns/column), " cols, ",
+../../folder/text(), ", ", folder/text(), ", ",
+count(primaryKey), " PK, ",
+count(foreignKeys/foreignKey), " FK, ",
+count(candidateKeys/candidateKey), " CK, ",
+concat("description: ", description/text() ) )
+#STOP#
+
+[XML_QUERY]
+
+job_id=T01 
+job_enabled=0 
+job_name=RPTITEM table329.xml
+job_description=T01 RPTITEM analyse
+
+system=siard
+subsystem=
+source=table329.xml
+target=siard_analyse_{dt}.log
+
+#START#
+concat("T01 table329.xml RPTITEM: ", count(//row), " rows" ),
+"c1 - c10", 
+/table/( 
+concat(count(//c1), ", ", count(//c2), ", ", count(//c3), ", ", count(//c4), ", ", count(//c5), " ", count(//c6), ", ", count(//c7), ", ", count(//c8), ", ", count(//c9), ", ", count(//c10) ) )
+#STOP#
+
+[XML_QUERY]
+
+job_id=T02 
+job_enabled=0 
+job_name=PRIVATISTLOGG table295.xml
+job_description=T02 PRIVATISTLOGG analyse
+
+system=siard
+subsystem=
+source=table295.xml
+target=siard_analyse_{dt}.log
+
+#START#
+concat("T02 table295.xml PRIVATISTLOGG: ", count(//row), " rows" ),
+"c1 - c6", 
+/table/( 
+concat(count(//c1), ", ", count(//c2), ", ", count(//c3), ", ", count(//c4), ", ", count(//c5), " ", count(//c6) ) )
+#STOP#
+
+[XML_QUERY]
+
+job_id=T03 
+job_enabled=0 
+job_name=ANSTALLNING table7.xml
+job_description=T03 ANSTALLNING analyse
+
+system=siard
+subsystem=
+source=table7.xml
+target=siard_analyse_{dt}.log
+
+#START#
+concat("T03 table7.xml ANSTALLNING: ", count(//row), " rows" ), 
+"c1 - c10", 
+/table/( 
+concat(count(//c1), ", ", count(//c2), ", ", count(//c3), ", ", count(//c4), ", ", count(//c5), " ", count(//c6), ", ", count(//c7), ", ", count(//c8), ", ", count(//c9), ", ", count(//c10) ) ),
+" ", "c11 - c20", 
+/table/( 
+concat(count(//c11), ", ", count(//c12), ", ", count(//c13), ", ", count(//c14), ", ", count(//c15), " ", count(//c16), ", ", count(//c17), ", ", count(//c18), ", ", count(//c19), ", ", count(//c20) ) ),
+" ", "c21 - c30", 
+/table/( 
+concat(count(//c21), ", ", count(//c22), ", ", count(//c23), ", ", count(//c24), ", ", count(//c25), " ", count(//c26), ", ", count(//c27), ", ", count(//c28), ", ", count(//c29), ", ", count(//c30) ) ),
+" ", "c31 - c40", 
+/table/( 
+concat(count(//c31), ", ", count(//c32), ", ", count(//c33), ", ", count(//c34), ", ", count(//c35), " ", count(//c36), ", ", count(//c37), ", ", count(//c38), ", ", count(//c39), ", ", count(//c40) ) ),
+" ", "c41 - c50", 
+/table/( 
+concat(count(//c41), ", ", count(//c42), ", ", count(//c43), ", ", count(//c44), ", ", count(//c45), " ", count(//c46), ", ", count(//c47), ", ", count(//c48), ", ", count(//c49), ", ", count(//c50) ) ),
+" ", "c51 - c60", 
+/table/( 
+concat(count(//c51), ", ", count(//c52), ", ", count(//c53), ", ", count(//c54), ", ", count(//c55), " ", count(//c56), ", ", count(//c57), ", ", count(//c58), ", ", count(//c59), ", ", count(//c60) ) )
+#STOP#
+
+[XML_QUERY]
+
+job_id=T04 
+job_enabled=0 
+job_name=ELEVFRANV table102.xml
+job_description=T04 ELEVFRANV analyse
+
+system=siard
+subsystem=
+source=table102.xml
+target=siard_analyse_{dt}.log
+
+#START#
+concat("T04 table102.xml ELEVFRANV: ", count(//row), " rows" ), 
+"c1 - c10", 
+/table/( 
+concat(count(//c1), ", ", count(//c2), ", ", count(//c3), ", ", count(//c4), ", ", count(//c5), " ", count(//c6), ", ", count(//c7), ", ", count(//c8), ", ", count(//c9), ", ", count(//c10) ) ),
+" ", "c11 - c20", 
+/table/( 
+concat(count(//c11), ", ", count(//c12), ", ", count(//c13), ", ", count(//c14), ", ", count(//c15), " ", count(//c16), ", ", count(//c17), ", ", count(//c18), ", ", count(//c19), ", ", count(//c20) ) ),
+" ", "c21 - c30", 
+/table/( 
+concat(count(//c21), ", ", count(//c22), ", ", count(//c23), ", ", count(//c24), ", ", count(//c25), " ", count(//c26), ", ", count(//c27), ", ", count(//c28), ", ", count(//c29), ", ", count(//c30) ) ),
+" ", "c31", 
+/table/( 
+concat(count(//c31), ", ") )
+#STOP#
+
+[XML_QUERY]
+
+job_id=T05 
+job_enabled=0 
+job_name=PERSON table271.xml
+job_description=T05 PERSON analyse
+
+system=siard
+subsystem=
+source=table271.xml
+target=siard_analyse_{dt}.log
+
+#START#
+concat("T05 table271.xml PERSON: ", count(//row), " rows" ), 
+"c1 - c10", 
+/table/( 
+concat(count(//c1), ", ", count(//c2), ", ", count(//c3), ", ", count(//c4), ", ", count(//c5), " ", count(//c6), ", ", count(//c7), ", ", count(//c8), ", ", count(//c9), ", ", count(//c10) ) ),
+" ", "c11 - c20", 
+/table/( 
+concat(count(//c11), ", ", count(//c12), ", ", count(//c13), ", ", count(//c14), ", ", count(//c15), " ", count(//c16), ", ", count(//c17), ", ", count(//c18), ", ", count(//c19), ", ", count(//c20) ) ),
+" ", "c21 - c30", 
+/table/( 
+concat(count(//c21), ", ", count(//c22), ", ", count(//c23), ", ", count(//c24), ", ", count(//c25), " ", count(//c26), ", ", count(//c27), ", ", count(//c28), ", ", count(//c29), ", ", count(//c30) ) ),
+" ", "c31 - c40", 
+/table/( 
+concat(count(//c31), ", ", count(//c32), ", ", count(//c33), ", ", count(//c34), ", ", count(//c35), " ", count(//c36), ", ", count(//c37), ", ", count(//c38), ", ", count(//c39), ", ", count(//c40) ) ),
+" ", "c41 - c50", 
+/table/( 
+concat(count(//c41), ", ", count(//c42), ", ", count(//c43), ", ", count(//c44), ", ", count(//c45), " ", count(//c46), ", ", count(//c47), ", ", count(//c48), ", ", count(//c49), ", ", count(//c50) ) ),
+" ", "c51 - c60", 
+/table/( 
+concat(count(//c51), ", ", count(//c52), ", ", count(//c53), ", ", count(//c54), ", ", count(//c55), " ", count(//c56), ", ", count(//c57), ", ", count(//c58), ", ", count(//c59), ", ", count(//c60) ) ), 
+" ", "c61 - c70", 
+/table/( 
+concat(count(//c61), ", ", count(//c62), ", ", count(//c63), ", ", count(//c64), ", ", count(//c65), " ", count(//c66), ", ", count(//c67), ", ", count(//c68), ", ", count(//c69), ", ", count(//c70) ) ),
+" ", "c71 - c80", 
+/table/( 
+concat(count(//c71), ", ", count(//c72), ", ", count(//c73), ", ", count(//c74), ", ", count(//c75), " ", count(//c76), ", ", count(//c77), ", ", count(//c78), ", ", count(//c79), ", ", count(//c80) ) ),
+" ", "c81 - c90", 
+/table/( 
+concat(count(//c81), ", ", count(//c82), ", ", count(//c83), ", ", count(//c84), ", ", count(//c85), " ", count(//c86), ", ", count(//c87), ", ", count(//c88), ", ", count(//c89), ", ", count(//c90) ) ),
+" ", "c91 - c100", 
+/table/( 
+concat(count(//c91), ", ", count(//c92), ", ", count(//c93), ", ", count(//c94), ", ", count(//c95), " ", count(//c96), ", ", count(//937), ", ", count(//c98), ", ", count(//c99), ", ", count(//c100) ) ),
+" ", "c101 - c110", 
+/table/( 
+concat(count(//c101), ", ", count(//c102), ", ", count(//c103), ", ", count(//c104), ", ", count(//c105), " ", count(//c106), ", ", count(//c107), ", ", count(//c108), ", ", count(//c109), ", ", count(//c110) ) ),
+" ", "c111 - c120", 
+/table/( 
+concat(count(//c111), ", ", count(//c112), ", ", count(//c113), ", ", count(//c114), ", ", count(//c115), " ", count(//c116), ", ", count(//c117), ", ", count(//c118), ", ", count(//c119), ", ", count(//c120) ) ),
+" ", "c121 - c130", 
+/table/( 
+concat(count(//c121), ", ", count(//c122), ", ", count(//c123), ", ", count(//c124), ", ", count(//c125), " ", count(//c126), ", ", count(//c127), ", ", count(//c128), ", ", count(//c129), ", ", count(//c130) ) ),
+" ", "c131", 
+/table/( 
+concat(count(//c131), ", ") )
+#STOP#
