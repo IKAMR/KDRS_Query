@@ -88,4 +88,21 @@ namespace KDRS_Query
             return 0;
         }
     }
+    //============================================================================
+    class ExcelFormat
+    {
+        //******************************************************************
+        public void ExcelFormatLog(Worksheet logSheet)
+        {
+            Range adjustRange = logSheet.get_Range("E:E", System.Type.Missing);
+
+            adjustRange.EntireColumn.ColumnWidth = 40;
+
+            adjustRange = logSheet.get_Range("G:G", System.Type.Missing);
+
+            adjustRange.EntireColumn.ColumnWidth = 15;
+
+            Marshal.ReleaseComObject(adjustRange);
+        }
+    }
 }
