@@ -49,6 +49,7 @@
             this.btnWriteToLog = new System.Windows.Forms.Button();
             this.btnChooseLogTemplate = new System.Windows.Forms.Button();
             this.txtLogTempFile = new System.Windows.Forms.TextBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.SuspendLayout();
             // 
             // btnInFile
@@ -129,7 +130,7 @@
             this.txtLogbox.Name = "txtLogbox";
             this.txtLogbox.ReadOnly = true;
             this.txtLogbox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtLogbox.Size = new System.Drawing.Size(682, 206);
+            this.txtLogbox.Size = new System.Drawing.Size(682, 208);
             this.txtLogbox.TabIndex = 7;
             this.txtLogbox.TabStop = false;
             // 
@@ -141,7 +142,7 @@
             // 
             this.txtReportFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtReportFile.Location = new System.Drawing.Point(163, 535);
+            this.txtReportFile.Location = new System.Drawing.Point(163, 537);
             this.txtReportFile.Name = "txtReportFile";
             this.txtReportFile.Size = new System.Drawing.Size(531, 20);
             this.txtReportFile.TabIndex = 9;
@@ -149,7 +150,7 @@
             // btnWriteReport
             // 
             this.btnWriteReport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnWriteReport.Location = new System.Drawing.Point(12, 561);
+            this.btnWriteReport.Location = new System.Drawing.Point(12, 563);
             this.btnWriteReport.Name = "btnWriteReport";
             this.btnWriteReport.Size = new System.Drawing.Size(107, 40);
             this.btnWriteReport.TabIndex = 10;
@@ -161,7 +162,7 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(26, 538);
+            this.label1.Location = new System.Drawing.Point(26, 540);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(118, 13);
             this.label1.TabIndex = 11;
@@ -170,7 +171,7 @@
             // btnChooseReportTemplate
             // 
             this.btnChooseReportTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnChooseReportTemplate.Location = new System.Drawing.Point(14, 507);
+            this.btnChooseReportTemplate.Location = new System.Drawing.Point(14, 509);
             this.btnChooseReportTemplate.Name = "btnChooseReportTemplate";
             this.btnChooseReportTemplate.Size = new System.Drawing.Size(143, 23);
             this.btnChooseReportTemplate.TabIndex = 12;
@@ -182,7 +183,7 @@
             // 
             this.txtReportTempFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtReportTempFile.Location = new System.Drawing.Point(163, 509);
+            this.txtReportTempFile.Location = new System.Drawing.Point(163, 511);
             this.txtReportTempFile.Name = "txtReportTempFile";
             this.txtReportTempFile.Size = new System.Drawing.Size(531, 20);
             this.txtReportTempFile.TabIndex = 13;
@@ -217,7 +218,7 @@
             // btnWriteToLog
             // 
             this.btnWriteToLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnWriteToLog.Location = new System.Drawing.Point(12, 452);
+            this.btnWriteToLog.Location = new System.Drawing.Point(12, 454);
             this.btnWriteToLog.Name = "btnWriteToLog";
             this.btnWriteToLog.Size = new System.Drawing.Size(107, 40);
             this.btnWriteToLog.TabIndex = 16;
@@ -228,7 +229,7 @@
             // btnChooseLogTemplate
             // 
             this.btnChooseLogTemplate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnChooseLogTemplate.Location = new System.Drawing.Point(14, 423);
+            this.btnChooseLogTemplate.Location = new System.Drawing.Point(14, 425);
             this.btnChooseLogTemplate.Name = "btnChooseLogTemplate";
             this.btnChooseLogTemplate.Size = new System.Drawing.Size(143, 23);
             this.btnChooseLogTemplate.TabIndex = 17;
@@ -240,17 +241,25 @@
             // 
             this.txtLogTempFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLogTempFile.Location = new System.Drawing.Point(163, 425);
+            this.txtLogTempFile.Location = new System.Drawing.Point(163, 427);
             this.txtLogTempFile.Name = "txtLogTempFile";
             this.txtLogTempFile.Size = new System.Drawing.Size(531, 20);
             this.txtLogTempFile.TabIndex = 18;
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(550, 12);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(144, 14);
+            this.progressBar1.TabIndex = 19;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.ClientSize = new System.Drawing.Size(706, 613);
+            this.ClientSize = new System.Drawing.Size(706, 615);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.btnChooseLogTemplate);
             this.Controls.Add(this.txtLogTempFile);
             this.Controls.Add(this.btnWriteToLog);
@@ -299,6 +308,7 @@
         private System.Windows.Forms.Button btnWriteToLog;
         private System.Windows.Forms.Button btnChooseLogTemplate;
         private System.Windows.Forms.TextBox txtLogTempFile;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 

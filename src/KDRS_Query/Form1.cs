@@ -23,6 +23,7 @@ namespace KDRS_Query
         string targetFolder;
         string queryFile;
         string inFile;
+        string outFile;
         bool cleanOut;
 
         List<string> singleQueryList = new List<string>();
@@ -39,6 +40,8 @@ namespace KDRS_Query
             query.OnProgressUpdate += query_OnProgressUpdate;
 
             xPRunner.OnProgressUpdate += query_OnProgressUpdate;
+
+           // progressBar1.Style = ProgressBarStyle.Continuous;
 
         }
 
@@ -60,6 +63,9 @@ namespace KDRS_Query
             }
             else
             {
+
+                progressBar1.Style = ProgressBarStyle.Marquee;
+
                 txtLogbox.Text = "";
                 inFile = txtInFile.Text;
                 targetFolder = txtTrgtPath.Text;
@@ -153,6 +159,11 @@ namespace KDRS_Query
             {
                 txtLogbox.AppendText("\r\n" + ex.Message);
             }
+            finally
+            {
+                progressBar1.Style = ProgressBarStyle.Continuous;
+
+            }
         }
         //******************************************************************
 
@@ -191,12 +202,16 @@ namespace KDRS_Query
             }
             finally
             {
+                progressBar1.Style = ProgressBarStyle.Continuous;
+
                 KillExcel();
             }
         }
         //******************************************************************
         private void btnReset_Click(object sender, EventArgs e)
         {
+            progressBar1.Style = ProgressBarStyle.Continuous;
+
             queryList.Clear();
             sqlQueryList.Clear();
 
@@ -215,6 +230,8 @@ namespace KDRS_Query
 
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            //progressBar1.Style = ProgressBarStyle.Marquee;
+
             queryFile = txtQFile.Text;
 
             // if (String.IsNullOrEmpty(queryFile))
@@ -241,6 +258,12 @@ namespace KDRS_Query
                     sqlRunner.RunSQL(sql_Query);
                 }
             }
+
+            outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + ".txt");
+            if (cleanOut)
+                outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + "_clean.txt");
+
+            writeResultsToFile(outFile, cleanOut);
         }
 
         //******************************************************************
@@ -252,11 +275,7 @@ namespace KDRS_Query
         //******************************************************************
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            string outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + ".txt");
-            if(cleanOut)
-                outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + "_clean.txt");
-
-            writeResultsToFile(outFile, cleanOut);
+           
 
             txtLogbox.AppendText("\r\nQueries complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
@@ -272,6 +291,7 @@ namespace KDRS_Query
             txtLogbox.AppendText("\r\n");
             txtLogbox.AppendText("\r\nJob complete.");
 
+            progressBar1.Style = ProgressBarStyle.Continuous;
 
             btnChooseReportTemplate.Enabled = true;
             btnInFile.Enabled = true;
