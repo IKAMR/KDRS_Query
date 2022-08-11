@@ -74,6 +74,7 @@ namespace KDRS_Query
 
                 queryList.Clear();
                 sqlQueryList.Clear();
+                singleQueryList.Clear();
 
                 btnChooseReportTemplate.Enabled = false;
                 btnInFile.Enabled = false;
@@ -214,6 +215,7 @@ namespace KDRS_Query
 
             queryList.Clear();
             sqlQueryList.Clear();
+            singleQueryList.Clear();
 
             targetFolder = String.Empty;
             queryFile = String.Empty;
