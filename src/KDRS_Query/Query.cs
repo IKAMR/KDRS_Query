@@ -68,6 +68,7 @@ namespace KDRS_Query
 
             return "";
         }
+        //******************************************************************
 
         public void CreateQuery(string qType, List<string> queryInfoList)
         {
@@ -81,7 +82,7 @@ namespace KDRS_Query
                     break;
             }
         }
-
+        //******************************************************************
 
         // Reads SQL queries from queryInfoList into SQL_Query object.
         public void MakeSQLQuery(List<string> queryInfoList)
@@ -93,7 +94,7 @@ namespace KDRS_Query
             sqlQuery.JobEnabled = queryInfoList[2].Split('=')[1];
             sqlQuery.JobName = queryInfoList[3].Split('=')[1].Trim();
             sqlQuery.JobDescription = queryInfoList[4].Split('=')[1].Trim();
-            sqlQuery.System = queryInfoList[6].Split('=')[1];
+            sqlQuery.SystemType = queryInfoList[6].Split('=')[1];
             sqlQuery.SubSystem = queryInfoList[7].Split('=')[1];
             sqlQuery.Source = queryInfoList[8].Split('=')[1];
             sqlQuery.Target = queryInfoList[9].Split('=')[1];
@@ -103,6 +104,25 @@ namespace KDRS_Query
             sqlQuery.User = queryInfoList[13].Split('=')[1];
             sqlQuery.Psw = queryInfoList[14].Split('=')[1];
             sqlQuery.Query = queryInfoList[17];
+        }
+        //******************************************************************
+
+        // Reads XPath queries from queryInfoList into XML_Query object.
+        public void MakeSiardXMLQuery(List<string> queryInfoList)
+        {
+            XML_Query query = new XML_Query();
+
+            QueryList.Add(query);
+            query.JobId = queryInfoList[1].Split('=')[1];
+            query.JobEnabled = queryInfoList[2].Split('=')[1];
+            query.JobName = queryInfoList[3].Split('=')[1].Trim();
+            query.JobDescription = queryInfoList[4].Split('=')[1].Trim();
+            query.SystemType = queryInfoList[6].Split('=')[1];
+            query.SubSystem = queryInfoList[7].Split('=')[1];
+            query.Source = queryInfoList[9].Split('=')[1].Trim();
+            query.SourcePath = queryInfoList[10].Split('=')[1].Trim();
+            query.Target = queryInfoList[13].Split('=')[1];
+            query.Query = queryInfoList[16];
         }
 
         // Reads XPath queries from queryInfoList into XML_Query object.
@@ -115,14 +135,14 @@ namespace KDRS_Query
             query.JobEnabled = queryInfoList[2].Split('=')[1];
             query.JobName = queryInfoList[3].Split('=')[1].Trim();
             query.JobDescription = queryInfoList[4].Split('=')[1].Trim();
-            query.System = queryInfoList[6].Split('=')[1];
+            query.SystemType = queryInfoList[6].Split('=')[1];
             query.SubSystem = queryInfoList[7].Split('=')[1];
             query.Source = queryInfoList[8].Split('=')[1].Trim();
             query.Target = queryInfoList[9].Split('=')[1];
             query.Query = queryInfoList[12];
         }
     }
-
+    //=============================================================================
     public enum ClassType { XML_Query, SQL_Query }
 
     public class QueryClass
@@ -131,9 +151,10 @@ namespace KDRS_Query
         public string JobEnabled { get; set; }
         public string JobName { get; set; }
         public string JobDescription { get; set; }
-        public string System { get; set; }
+        public string SystemType { get; set; }
         public string SubSystem { get; set; }
         public string Source { get; set; }
+        public string SourcePath { get; set; }
         public string Target { get; set; }
         public string Query { get; set; }
         public string Result { get; set; }
@@ -148,16 +169,27 @@ namespace KDRS_Query
             }
         }
     }
+    //******************************************************************
 
     public class XML_Query : QueryClass
     {
 
     }
+    //******************************************************************
     public class SQL_Query : QueryClass
     {
         public string Server { get; set; }
         public string Database { get; set; }
         public string User { get; set; }
         public string Psw { get; set; }
+    }
+    //******************************************************************
+
+    public class XML_SIARD_Query : QueryClass
+    {
+        public string Metadata { get; set; }
+        public string MetaPath { get; set; }
+
+
     }
 }

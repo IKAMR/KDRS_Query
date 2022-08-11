@@ -68,6 +68,7 @@ namespace KDRS_Query
 
             }
         }
+        //******************************************************************
 
         // Get coordinates of cell with content.
         public int getCell(string cellContent, Range column)
@@ -85,6 +86,23 @@ namespace KDRS_Query
             Marshal.ReleaseComObject(column);
 
             return 0;
+        }
+    }
+    //============================================================================
+    class ExcelFormat
+    {
+        //******************************************************************
+        public void ExcelFormatLog(Worksheet logSheet)
+        {
+            Range adjustRange = logSheet.get_Range("E:E", System.Type.Missing);
+
+            adjustRange.EntireColumn.ColumnWidth = 40;
+
+            adjustRange = logSheet.get_Range("G:G", System.Type.Missing);
+
+            adjustRange.EntireColumn.ColumnWidth = 15;
+
+            Marshal.ReleaseComObject(adjustRange);
         }
     }
 }

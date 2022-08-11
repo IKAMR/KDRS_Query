@@ -23,6 +23,7 @@ namespace KDRS_Query
         string targetFolder;
         string queryFile;
         string inFile;
+        string outFile;
         bool cleanOut;
 
         List<string> singleQueryList = new List<string>();
@@ -39,6 +40,8 @@ namespace KDRS_Query
             query.OnProgressUpdate += query_OnProgressUpdate;
 
             xPRunner.OnProgressUpdate += query_OnProgressUpdate;
+
+           // progressBar1.Style = ProgressBarStyle.Continuous;
 
         }
 
@@ -60,6 +63,9 @@ namespace KDRS_Query
             }
             else
             {
+
+                progressBar1.Style = ProgressBarStyle.Marquee;
+
                 txtLogbox.Text = "";
                 inFile = txtInFile.Text;
                 targetFolder = txtTrgtPath.Text;
@@ -68,6 +74,7 @@ namespace KDRS_Query
 
                 queryList.Clear();
                 sqlQueryList.Clear();
+                singleQueryList.Clear();
 
                 btnChooseReportTemplate.Enabled = false;
                 btnInFile.Enabled = false;
@@ -85,7 +92,6 @@ namespace KDRS_Query
                 backgroundWorker1.RunWorkerAsync();
             }
         }
-
         //******************************************************************
         private void btnInFold_Click(object sender, EventArgs e)
         {
@@ -93,7 +99,6 @@ namespace KDRS_Query
             if (dr == DialogResult.OK)
                 txtInFile.Text = folderBrowserDialog1.SelectedPath;
         }
-
         //******************************************************************
         private void btnTrgtFold_Click(object sender, EventArgs e)
         {
@@ -101,7 +106,6 @@ namespace KDRS_Query
             if (dr == DialogResult.OK)
                 txtTrgtPath.Text = folderBrowserDialog1.SelectedPath;
         }
-
         //******************************************************************
         private void btnQFile_Click(object sender, EventArgs e)
         {
@@ -109,7 +113,6 @@ namespace KDRS_Query
             if (dr == DialogResult.OK)
                 txtQFile.Text = openFileDialog1.FileName;
         }
-
         //******************************************************************
         private void btnChooseReportTemplate_Click(object sender, EventArgs e)
         {
@@ -125,7 +128,6 @@ namespace KDRS_Query
             if (dr == DialogResult.OK)
                 txtLogTempFile.Text = openFileDialog1.FileName;
         }
-
         //******************************************************************
         private void btnWriteReport_Click(object sender, EventArgs e)
         {
@@ -157,6 +159,11 @@ namespace KDRS_Query
             catch (Exception ex)
             {
                 txtLogbox.AppendText("\r\n" + ex.Message);
+            }
+            finally
+            {
+                progressBar1.Style = ProgressBarStyle.Continuous;
+
             }
         }
         //******************************************************************
@@ -196,16 +203,19 @@ namespace KDRS_Query
             }
             finally
             {
+                progressBar1.Style = ProgressBarStyle.Continuous;
+
                 KillExcel();
             }
         }
-
-
         //******************************************************************
         private void btnReset_Click(object sender, EventArgs e)
         {
+            progressBar1.Style = ProgressBarStyle.Continuous;
+
             queryList.Clear();
             sqlQueryList.Clear();
+            singleQueryList.Clear();
 
             targetFolder = String.Empty;
             queryFile = String.Empty;
@@ -222,6 +232,8 @@ namespace KDRS_Query
 
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
+            //progressBar1.Style = ProgressBarStyle.Marquee;
+
             queryFile = txtQFile.Text;
 
             // if (String.IsNullOrEmpty(queryFile))
@@ -248,6 +260,12 @@ namespace KDRS_Query
                     sqlRunner.RunSQL(sql_Query);
                 }
             }
+
+            outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + ".txt");
+            if (cleanOut)
+                outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + "_clean.txt");
+
+            writeResultsToFile(outFile, cleanOut);
         }
 
         //******************************************************************
@@ -259,11 +277,7 @@ namespace KDRS_Query
         //******************************************************************
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-            string outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + ".txt");
-            if(cleanOut)
-                outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + "_clean.txt");
-
-            writeResultsToFile(outFile, cleanOut);
+           
 
             txtLogbox.AppendText("\r\nQueries complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
@@ -279,6 +293,7 @@ namespace KDRS_Query
             txtLogbox.AppendText("\r\n");
             txtLogbox.AppendText("\r\nJob complete.");
 
+            progressBar1.Style = ProgressBarStyle.Continuous;
 
             btnChooseReportTemplate.Enabled = true;
             btnInFile.Enabled = true;
@@ -315,7 +330,7 @@ namespace KDRS_Query
                             w.WriteLine(query.JobEnabled);
                             w.WriteLine(query.JobName);
                             w.WriteLine(query.JobDescription);
-                            w.WriteLine(query.System);
+                            w.WriteLine(query.SystemType);
                             w.WriteLine(query.SubSystem);
                             w.WriteLine(query.Source);
                             w.WriteLine(query.Target);
@@ -348,7 +363,7 @@ namespace KDRS_Query
                         w.WriteLine(sqlQuery.JobEnabled);
                         w.WriteLine(sqlQuery.JobName);
                         w.WriteLine(sqlQuery.JobDescription);
-                        w.WriteLine(sqlQuery.System);
+                        w.WriteLine(sqlQuery.SystemType);
                         w.WriteLine(sqlQuery.SubSystem);
                         w.WriteLine(sqlQuery.Source);
                         w.WriteLine(sqlQuery.Target);
@@ -384,7 +399,7 @@ namespace KDRS_Query
                 w.WriteLine(query.JobEnabled);
                 w.WriteLine(query.JobName);
                 w.WriteLine(query.JobDescription);
-                w.WriteLine(query.System);
+                w.WriteLine(query.SystemType);
                 w.WriteLine(query.SubSystem);
                 w.WriteLine(query.Source);
                 w.WriteLine(query.Target);
@@ -442,6 +457,6 @@ namespace KDRS_Query
     public static class Globals
     {
         public static readonly String toolName = "KDRS Query";
-        public static readonly String toolVersion = "0.8";
+        public static readonly String toolVersion = "0.9";
     }
 }
