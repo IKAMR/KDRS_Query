@@ -53,9 +53,13 @@ namespace KDRS_Query
 
                     try
                     {
-                        OnProgressUpdate?.Invoke(q.JobId);
+                        string time = GetTimeStamp();
+                        OnProgressUpdate?.Invoke("\r\n" + time + " " + q.JobId);
                         string result = xPathCompiler.Evaluate(query, xmlDoc).ToString();
-                        
+                        OnProgressUpdate?.Invoke(q.JobId + " - Success " + GetTimeStamp());
+
+                        if (result.Contains("@@"))
+                            result.Replace("@@\",\\" , ",");
                         q.Result = result.Replace("\"", "");
                     }
                     catch (Exception e)
@@ -70,6 +74,12 @@ namespace KDRS_Query
 
         //******************************************************************
 
+        public string GetTimeStamp()
+        {
+            return DateTime.Now.ToString("HH.mm.ss");
+        }
+
+        //******************************************************************
         public void GetSiardTableNames()
         {
 

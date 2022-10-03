@@ -271,7 +271,8 @@ namespace KDRS_Query
         //******************************************************************
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            txtLogbox.AppendText("\r\n" + e.UserState.ToString());
+
+            txtLogbox.AppendText(e.UserState.ToString());
         }
 
         //******************************************************************
@@ -457,6 +458,6 @@ namespace KDRS_Query
     public static class Globals
     {
         public static readonly String toolName = "KDRS Query";
-        public static readonly String toolVersion = "0.9";
+        public static readonly String toolVersion = "0.9.1";
     }
 }
