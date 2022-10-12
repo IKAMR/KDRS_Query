@@ -245,21 +245,25 @@ namespace KDRS_Query
 
             queryList = query.QueryList;
 
-            backgroundWorker1.ReportProgress(0, "Running queries:");
+            backgroundWorker1.ReportProgress(0, "\r\nRunning queries:");
 
 
             xPRunner.RunXPath(queryList, inFile);
 
             sqlQueryList = query.SqlQueryList;
 
-            // xPRunner.OnProgressUpdate += query_OnProgressUpdate;
-            foreach (SQL_Query sql_Query in sqlQueryList)
+           sqlRunner.OnProgressUpdate += query_OnProgressUpdate;
+            sqlRunner.RunSQL(sqlQueryList, inFile);
+
+
+            /*foreach (SQL_Query sql_Query in sqlQueryList)
             {
                 if (sql_Query.JobEnabled.Equals("1"))
                 {
                     sqlRunner.RunSQL(sql_Query);
                 }
-            }
+            }*/
+
 
             outFile = Path.Combine(targetFolder, "kdrs_query_results_" + Path.GetFileNameWithoutExtension(inFile) + ".txt");
             if (cleanOut)

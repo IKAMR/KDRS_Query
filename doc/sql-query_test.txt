@@ -1,0 +1,56 @@
+_PARAMETERS_
+query_name=Noark 5 Standard komplett
+query_date=2020-12-10
+query_description=Kjører alle job_enabled <> 0 Noark 5-queries [QA må gjøres mot xsd skjemaer Noark 5 v3.1, 4.0 & 5.0]
+
+query_type=Noark5
+query_subtype=3.1,4.0,5.0
+query_version=0.2
+
+tool_name=XML Queries
+tool_version=0.6
+tool_info=[Standard rapportnavn resultat: "kdrs_query_results_uttrekk.txt". Seksjoner: XML_QUERY og SQL_QUERY. Parameter job_enabled = 0 Kjøres ikke, = 1 Inkluderes i rapport hvis feltet aktivert i rapport, =2 Ikke inkludert i rapport, =3 Inkludert i rapport, men lagret til egen fil (postfix filnavn job_id).]
+
+[SQL_QUERY]
+
+job_id=J02
+job_enabled=1 
+job_name=Kontroll referanser i endringslogg
+job_description=N5.62 [DRAFT] Spørring må lages!
+
+system=noark5 
+subsystem=
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+server=127.0.0.1 
+database=g1519015ephorte01
+user=root
+psw=elarkiv7531
+
+#START# 
+select * from arkiv order by AR_ARKIV LIMIT 0, 1000;
+
+#STOP#
+
+[SQL_QUERY]
+
+job_id=J03
+job_enabled=1 
+job_name=Kontroll referanser i endringslogg
+job_description=N5.62 [DRAFT] Spørring må lages!
+
+system=noark5 
+subsystem=
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+server=127.0.0.1 
+database=g1519015ephorte01
+user=root
+psw=elarkiv7531
+
+#START# 
+select concat ('N4.04.01 Antall rader i journpost: ', cast( (select count(*) from journpost) as char) ) LIMIT 0, 1000
+
+#STOP#
