@@ -54,17 +54,18 @@ namespace KDRS_Query
                     try
                     {
                         string time = GetTimeStamp();
-                        OnProgressUpdate?.Invoke("\r\n" + time + " " + q.JobId);
+                        OnProgressUpdate?.Invoke(time + " " + q.JobId);
                         string result = xPathCompiler.Evaluate(query, xmlDoc).ToString();
-                        OnProgressUpdate?.Invoke("\r\n" + q.JobId + " - Success " + GetTimeStamp());
+                        OnProgressUpdate?.Invoke(q.JobId + " - Success " + GetTimeStamp());
+                        Console.WriteLine(result);
 
-                        if (result.Contains("@@"))
-                            result.Replace("@@\",\\" , ",");
                         q.Result = result.Replace("\"", "");
+                        if (result.Contains("@@"))
+                            result.Replace("\n", "");
                     }
                     catch (Exception e)
                     {
-                        OnProgressUpdate?.Invoke("\r\nERROR: " + q.JobId);
+                        OnProgressUpdate?.Invoke("ERROR: " + q.JobId);
                         q.Result = "ERROR 1, unable to compile: " + q.Query;
                         Console.WriteLine(e.Message);
                     }

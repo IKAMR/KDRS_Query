@@ -7,9 +7,37 @@ query_type=Noark5
 query_subtype=3.1,4.0,5.0
 query_version=0.2
 
+separator=!
+
 tool_name=XML Queries
 tool_version=0.6
 tool_info=[Standard rapportnavn resultat: "kdrs_query_results_uttrekk.txt". Seksjoner: XML_QUERY og SQL_QUERY. Parameter job_enabled = 0 Kjøres ikke, = 1 Inkluderes i rapport hvis feltet aktivert i rapport, =2 Ikke inkludert i rapport, =3 Inkludert i rapport, men lagret til egen fil (postfix filnavn job_id).]
+
+_PARAMETERS_END_
+
+[XML_QUERY]
+
+job_id=C01 
+job_enabled=1 
+job_name=Antall arkiver i arkivstrukturen
+job_description=N5.04 Arkiv og Arkivskaper(e) info
+
+system=noark5 
+subsystem=
+source=arkivstruktur.xml
+target=noark5_analyse_{dt}.log
+
+#START#
+concat("N5.04 Antall arkiv: ", count(//arkiv)), " ",
+//arkiv/(concat("Tittel: ", tittel/text()) , 
+concat("ID: ", systemID/text() ), 
+concat("Start: ", opprettetDato/text(), ", Slutt: ", avsluttetDato/text() ), 
+concat("Opprettet av: ", opprettetAv/text(), ", Avsluttet av: ", avsluttetAv/text() )),
+" ", 
+concat( "Arkivstrukturen inneholder ", count(//arkivskaper), " arkivskaper(e):"),
+//arkivskaper/concat("Navn: ", arkivskaperNavn/text(), ", ID: ", arkivskaperID/text(), 
+", Beskrivelse: ", beskrivelse/text() )
+#STOP#
 
 [SQL_QUERY]
 

@@ -26,7 +26,7 @@ namespace KDRS_Query
                 OnProgressUpdate?.Invoke(sqlQuery.JobId);
                 cnn.Open();
                 Console.WriteLine("Connection Open");
-                OnProgressUpdate?.Invoke("\r\nConnection Open. Server: " + sqlQuery.Server + ", Database: " + sqlQuery.Database );
+                OnProgressUpdate?.Invoke("Connection Open. Server: " + sqlQuery.Server + ", Database: " + sqlQuery.Database );
 
 
                 string query = "select * from arkiv";
@@ -52,7 +52,7 @@ namespace KDRS_Query
             catch (MySqlException ex)
             {
                 Console.WriteLine("Unable to open connection!");
-                OnProgressUpdate?.Invoke("\r\nUnable to open connection");
+                OnProgressUpdate?.Invoke("Unable to open connection");
 
                 throw ex;
             }
@@ -67,7 +67,7 @@ namespace KDRS_Query
                 {
                     cnn.Close();
                     Console.WriteLine("Connection Closed");
-                    OnProgressUpdate?.Invoke("\r\nConnection Closed");
+                    OnProgressUpdate?.Invoke("Connection Closed");
 
                 }
 
@@ -84,7 +84,7 @@ namespace KDRS_Query
             {
                 try
                 {
-                    if (openDatabase == null || !openDatabase.Equals(sqlQuery.Database))
+                    if (cnn == null || openDatabase == null || !openDatabase.Equals(sqlQuery.Database))
                     {
 
 
@@ -92,7 +92,7 @@ namespace KDRS_Query
                         {
                             cnn.Close();
                             Console.WriteLine("Connection Closed");
-                            OnProgressUpdate?.Invoke("\r\nConnection Closed");
+                            OnProgressUpdate?.Invoke("Connection Closed");
 
                         }
 
@@ -101,12 +101,12 @@ namespace KDRS_Query
                         cnn = new MySqlConnection(connectionstring);
 
                         cnn.Open();
-                        OnProgressUpdate?.Invoke("\r\nConnection Open. Server: " + sqlQuery.Server + ", Database: " + sqlQuery.Database);
+                        OnProgressUpdate?.Invoke("Connection Open. Server: " + sqlQuery.Server + ", Database: " + sqlQuery.Database);
                         openDatabase = sqlQuery.Database;
 
                     }
                     string time = GetTimeStamp();
-                    OnProgressUpdate?.Invoke("\r\n" + time + " " + sqlQuery.JobId);
+                    OnProgressUpdate?.Invoke(time + " " + sqlQuery.JobId);
                     Console.WriteLine("Connection Open");
 
                     MySqlCommand cmd = new MySqlCommand(sqlQuery.Query, cnn);
@@ -119,13 +119,13 @@ namespace KDRS_Query
                     {
                         for (int i = 0; i < ColumnCount; i++)
                         {
-                            ListOfColumns = ListOfColumns + reader[i].ToString() + "|";
+                            ListOfColumns = ListOfColumns + reader[i].ToString() + sqlQuery.separator;
                         }
                         ListOfColumns = ListOfColumns + "\r\n";
                     }
 
                     sqlQuery.Result = ListOfColumns;
-                    OnProgressUpdate?.Invoke("\r\n" + sqlQuery.JobId + " - Success " + GetTimeStamp());
+                    OnProgressUpdate?.Invoke(sqlQuery.JobId + " - Success " + GetTimeStamp());
 
                     if (reader != null)
                     {
@@ -135,7 +135,7 @@ namespace KDRS_Query
                 catch (MySqlException ex)
                 {
                     Console.WriteLine("Unable to open connection!");
-                    OnProgressUpdate?.Invoke("\r\nUnable to open connection");
+                    OnProgressUpdate?.Invoke("Unable to open connection");
                     openDatabase = null;
 
                     throw ex;
@@ -147,7 +147,7 @@ namespace KDRS_Query
             {
                 cnn.Close();
                 Console.WriteLine("Connection Closed");
-                OnProgressUpdate?.Invoke("\r\nConnection Closed");
+                OnProgressUpdate?.Invoke("Connection Closed");
 
             }
         }

@@ -19,6 +19,7 @@ namespace KDRS_Query
         Query query = new Query();
         XPathQueryRunner xPRunner = new XPathQueryRunner();
         MYSQL_Runner sqlRunner = new MYSQL_Runner();
+        QueryParameters queryParameters = new QueryParameters();
 
         string targetFolder;
         string queryFile;
@@ -40,8 +41,10 @@ namespace KDRS_Query
             query.OnProgressUpdate += query_OnProgressUpdate;
 
             xPRunner.OnProgressUpdate += query_OnProgressUpdate;
+            sqlRunner.OnProgressUpdate += query_OnProgressUpdate;
 
-           // progressBar1.Style = ProgressBarStyle.Continuous;
+
+            // progressBar1.Style = ProgressBarStyle.Continuous;
 
         }
 
@@ -59,11 +62,9 @@ namespace KDRS_Query
             else if (String.IsNullOrEmpty(txtQFile.Text) || !File.Exists(txtQFile.Text) || Path.GetExtension(txtQFile.Text) != ".txt")
             {
                 txtLogbox.Text = "Please choose valid query file";
-
             }
             else
             {
-
                 progressBar1.Style = ProgressBarStyle.Marquee;
 
                 txtLogbox.Text = "";
@@ -163,7 +164,6 @@ namespace KDRS_Query
             finally
             {
                 progressBar1.Style = ProgressBarStyle.Continuous;
-
             }
         }
         //******************************************************************
@@ -176,7 +176,7 @@ namespace KDRS_Query
             string logFileName = "test_log_noark5.xlsx";
 
             //if (!String.IsNullOrEmpty(txtReportFile.Text))
-             //   logFileName = txtReportFile.Text;
+            //   logFileName = txtReportFile.Text;
 
             string logFilePath = Path.Combine(targetFolder, logFileName);
 
@@ -184,7 +184,7 @@ namespace KDRS_Query
 
             string defaultFileName = txtLogTempFile.Text;
             //    @"C:\developer\c#\kdrs_query\KDRS_Query\doc\IKAMR-Noark5-C-rapportmal_v1.2.0_2020-01-22.docx";
-            
+
             try
             {
                 if (File.Exists(defaultFileName))
@@ -242,17 +242,15 @@ namespace KDRS_Query
             Console.WriteLine("Reading queries from: " + inFile);
 
             query.GetQuery(queryFile);
-
+            
             queryList = query.QueryList;
 
-            backgroundWorker1.ReportProgress(0, "\r\nRunning queries:");
-
+            backgroundWorker1.ReportProgress(0, "Running queries:");
 
             xPRunner.RunXPath(queryList, inFile);
 
             sqlQueryList = query.SqlQueryList;
 
-           sqlRunner.OnProgressUpdate += query_OnProgressUpdate;
             sqlRunner.RunSQL(sqlQueryList, inFile);
 
 
@@ -275,21 +273,21 @@ namespace KDRS_Query
         //******************************************************************
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-
+            txtLogbox.AppendText("\r\n");
             txtLogbox.AppendText(e.UserState.ToString());
         }
 
         //******************************************************************
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
-           
+
 
             txtLogbox.AppendText("\r\nQueries complete.");
             txtLogbox.AppendText("\r\nResults saved at: " + outFile);
 
-            if(singleQueryList.Count>0)
+            if (singleQueryList.Count > 0)
             {
-                foreach (string name in singleQueryList) 
+                foreach (string name in singleQueryList)
                 {
                     txtLogbox.AppendText("\r\nSingle query printed to: " + name);
                 }
@@ -346,7 +344,6 @@ namespace KDRS_Query
                         else
                         {
                             w.WriteLine("");
-
                         }
 
                         w.WriteLine(query.Result);
@@ -427,6 +424,14 @@ namespace KDRS_Query
                 backgroundWorker1.ReportProgress(0, statusMsg);
             });
         }
+        //******************************************************************
+
+        public void GetParameters(string filename)
+        { 
+        
+
+        }
+        //******************************************************************
 
         private void KillExcel()
         {
@@ -455,7 +460,6 @@ namespace KDRS_Query
                 iCount = iCount + 1;
             }
         }
-
     }
 
     //====================================================================================================

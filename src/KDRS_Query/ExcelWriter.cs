@@ -55,7 +55,6 @@ namespace KDRS_Query
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
 
-
                 Marshal.ReleaseComObject(idRange);
                 Marshal.ReleaseComObject(xlWorksheet);
                 Marshal.ReleaseComObject(xlWorksheets);
@@ -65,7 +64,6 @@ namespace KDRS_Query
 
                 xlApp1.Quit();
                 Marshal.ReleaseComObject(xlApp1);
-
             }
         }
         //******************************************************************
@@ -73,7 +71,6 @@ namespace KDRS_Query
         // Get coordinates of cell with content.
         public int getCell(string cellContent, Range column)
         {
-
             foreach (Range r in column)
             {
                 if (r.Value == cellContent)

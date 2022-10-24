@@ -10,7 +10,11 @@ namespace KDRS_Query
         public delegate void ProgressUpdate(string statusMsg);
         public event ProgressUpdate OnProgressUpdate;
 
+        List<string> parameters = new List<string>();
+
         List<string> queryInfo = new List<string>();
+
+        QueryParameters queryParameters = new QueryParameters();
 
         public List<QueryClass> QueryList { get; set; } = new List<QueryClass>();
         public List<SQL_Query> SqlQueryList { get; set; } = new List<SQL_Query>();
@@ -27,6 +31,15 @@ namespace KDRS_Query
                 {
                     Console.WriteLine(line);
 
+                    if (line.Equals("_PARAMETERS_"))
+                    {
+                        while (!(line = reader.ReadLine()).Equals("_PARAMETERS_END_"))
+                        {
+                            parameters.Add(line);
+                        }
+                        GetParameters(parameters);
+                        Console.WriteLine("Found parameters end");
+                    }
 
                     if (line.StartsWith("["))
                     {
@@ -68,9 +81,21 @@ namespace KDRS_Query
 
             return "";
         }
+
         //******************************************************************
 
-        public void CreateQuery(string qType, List<string> queryInfoList)
+        public void GetParameters(List<string> parameters)
+        {
+
+            if (!String.IsNullOrEmpty(parameters[8].Split('=')[1]))
+                queryParameters.separator = parameters[8].Split('=')[1];
+            Console.WriteLine("Separator: {0}", queryParameters.separator);
+
+        }
+
+        //******************************************************************
+
+            public void CreateQuery(string qType, List<string> queryInfoList)
         {
             switch (qType)
             {
@@ -104,6 +129,8 @@ namespace KDRS_Query
             sqlQuery.User = queryInfoList[13].Split('=')[1];
             sqlQuery.Psw = queryInfoList[14].Split('=')[1];
             sqlQuery.Query = queryInfoList[17];
+
+            sqlQuery.separator = queryParameters.separator;
         }
         //******************************************************************
 
@@ -182,6 +209,8 @@ namespace KDRS_Query
         public string Database { get; set; }
         public string User { get; set; }
         public string Psw { get; set; }
+        public string separator { get; set; }
+
     }
     //******************************************************************
 
@@ -189,7 +218,17 @@ namespace KDRS_Query
     {
         public string Metadata { get; set; }
         public string MetaPath { get; set; }
-
-
     }
+
+    //******************************************************************
+    public class QueryParameters
+    {
+        public QueryParameters()
+        {
+            this.separator = "|";
+        }
+
+        public string separator { get; set; }
+    }
+
 }
