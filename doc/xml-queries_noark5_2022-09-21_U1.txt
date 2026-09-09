@@ -1,0 +1,375 @@
+_PARAMETERS_
+query_name=Noark 5 Additional queries - SSIKT ephorte arkivdel, rev1
+query_date=2022-09-21
+query_description=Kjører manuelt aktiverte job_enabled <> 0 Noark 5-queries [QA må gjøres mot xsd skjemaer Noark 5 v3.1, 4.0 & 5.0]
+
+query_type=Noark5
+query_subtype=3.1,4.0,5.0
+query_version=0.2
+
+tool_name=XML Queries
+tool_version=0.6
+tool_info=[Standard rapportnavn resultat: "kdrs_query_results_uttrekk.txt". Seksjoner: XML_QUERY og SQL_QUERY. Parameter job_enabled = 0 Kjøres ikke, = 1 Inkluderes i rapport hvis feltet aktivert i rapport, =2 Ikke inkludert i rapport, =3 Inkludert i rapport, men lagret til egen fil (postfix filnavn job_id).]
+
+[XML_QUERY]
+
+job_id=U01
+job_enabled=1 
+job_name=Konsentrert opptelling for hele Noark 5-uttrekket
+job_description=N5.101 Arkivdeler info (utvidet) [3] Til egen fil
+
+system=noark5 
+subsystem=
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+"U1. N5.101 Konsentrert opptelling for hele Noark 5-uttrekket", " ", 
+
+concat("N5.04 Arkiv: ", count(//arkiv)), " ", 
+//arkiv/(concat("Tittel: ", tittel/text()) , 
+concat("ID: ", systemID/text() ), 
+concat("Beskrivelse: ", beskrivelse/text() ),
+concat("Arkivstatus: ", arkivstatus/text() ),
+concat("Dokumentmedium: ", dokumentmedium/text() ),
+concat("Opprettet/Avsluttet: ", substring(opprettetDato/text(), 0, 11), " - ", substring(avsluttetDato/text(), 0, 11) ), 
+concat("Opprettet av: ", opprettetAv/text(), ", Avsluttet av: ", avsluttetAv/text() )),
+" ", 
+concat( "Arkivstrukturen inneholder ", count(//arkivskaper), " arkivskaper(e):"),
+//arkivskaper/concat("Navn: ", arkivskaperNavn/text(), ", ID: ", arkivskaperID/text(), 
+", Beskrivelse: ", beskrivelse/text() ), " ", 
+
+concat("N5.04 Arkiv; Opprettet/Avsluttet: ", substring(/arkiv/opprettetDato, 0, 11), 
+" - ", substring(/arkiv/avsluttetDato, 0, 11) ), 
+
+concat("N5.05 Arkivdel; Opprettet første/Avsluttet siste: ", substring(string(min(//arkivdel/opprettetDato/xs:dateTime(.))), 0, 11), 
+" - ", substring(string(max(//arkivdel/avsluttetDato/xs:dateTime(.)) ), 0, 11) ), 
+
+concat("N5.10 Mappe; Opprettet første/Avsluttet siste: ", substring(string(min(//mappe/opprettetDato/xs:dateTime(.))), 0, 11), 
+" - ", substring(string(max(//mappe/avsluttetDato/xs:dateTime(.)) ), 0, 11) ), 
+
+concat("N5.15 Saksdato; Første/Siste: ", min(//mappe/saksdato/xs:date(.)), 
+" - ", max(//mappe/saksdato/xs:date(.)) ), 
+
+concat("N5.15 Møtedato; Første/Siste: ", min(//mappe/moetedato/xs:date(.)), 
+" - ", max(//mappe/moetedato/xs:date(.)) ), 
+
+concat("N5.16 Registrering; Arkivert første/Arkivert siste: ", substring(string(min(//registrering/arkivertDato/xs:dateTime(.))), 0, 11), 
+" - ", substring(string(max(//registrering/arkivertDato/xs:dateTime(.))), 0, 11) ), 
+
+concat("N5.60 Journalført dato; Første/Siste: ", min(//registrering[@xsi:type='journalpost']/journaldato/xs:date(.)), 
+" - ", max(//registrering[@xsi:type='journalpost']/journaldato/xs:date(.)) ),
+
+concat("N5.27 Dokument opprettet; Første/Siste: ", substring(string(min(//dokumentbeskrivelse/opprettetDato/xs:dateTime(.))), 0, 11), 
+" - ", substring(string(max(//dokumentbeskrivelse/opprettetDato/xs:dateTime(.))), 0, 11) ), " ", 
+
+concat("N5.05/06 Arkivdeler: ", count(//arkivdel) ), 
+//arkivdel/(concat(position(), ": " , tittel, 
+" [", substring(dokumentmedium/text(), 0, 7), 
+" ", substring(opprettetDato/text(), 0, 5), "-", substring(avsluttetDato/text(), 0, 5), 
+" ", substring(arkivdelstatus/text(), 1, 6), 
+"]; Mappe=", count(descendant::mappe), 
+", Reg=", count(descendant::registrering), 
+", Doc=", count(descendant::dokumentbeskrivelse), " (@@" ), 
+for $format in distinct-values(descendant::dokumentbeskrivelse/dokumentmedium)
+return
+concat(substring($format, 1, 6), ": ", count(descendant::dokumentbeskrivelse/dokumentmedium[text() = $format]), ", @@" ), 
+"@@ )" ), " ", 
+
+concat("N5.07 Klassifikasjonssystemer: ", count(//klassifikasjonssystem)), 
+concat("N5.08 Klasser: ", count(//klasse)), 
+concat("N5.12 Klasser med både mappe og underklasse (>0 er avvik): ", count(//klasse[klasse]/mappe)),  
+concat("N5.19.01 Antall klasser med både registrering og underklasse (>0 er avvik): ", count(//klasse[klasse]/registrering)), " ", 
+
+concat("N5.10/12/14 Mapper: ", count(//mappe), 
+"; Sak: ", count(//mappe[@xsi:type="saksmappe"]),
+", Møte: ", count(//mappe[@xsi:type="moetemappe"]),
+", Mapper uten reg: ", count(//mappe[not (mappe or registrering)]) ),
+concat("N5.15 Mappe status, sak; Avsluttet: ", count(//mappe[saksstatus='Avsluttet']), 
+", Utgår: ", count(//mappe[saksstatus='Utgår']), 
+", Under beh: ", count(//mappe[sakstatus='Underbehandling']) ), 
+concat(", Avsluttet dato sak: ", count(//mappe[@xsi:type='saksmappe'][string-length (avsluttetDato/text()) > 0]), 
+", Avsluttet dato møte: ", count(//mappe[@xsi:type='moetemappe'][string-length (avsluttetDato/text()) > 0]) ), 
+" ", 
+
+"N5.15.01 Mappe type (generisk); @@",
+for $mappetype in distinct-values(//mappe/@xsi:type)
+return
+(concat($mappetype, ': ', count(//mappe[@xsi:type=$mappetype]), ", @@" ) ),
+concat('Uten spesialisering: ', count(//mappe[count(@*)=3])), 
+
+"N5.15.02 Mappe status (generisk); @@",
+for $mappestatus in distinct-values(//mappe/saksstatus)
+return
+(concat($mappestatus,": ", count(index-of(//mappe/saksstatus, $mappestatus)))), " ", 
+
+"N5.11 Mapper pr. år: ", 
+sort(for $v in distinct-values(//mappe/opprettetDato/substring-before(., "-"))
+return
+(concat($v,": ", count(index-of(//mappe/opprettetDato/substring-before(., "-"), $v)))) ), 
+" ", 
+
+concat("N5.16 Registreringer: ", count(//registrering), 
+", Journalpost: ", count(//registrering[@xsi:type='journalpost']), 
+", Møte: ", count(//registrering[@xsi:type='moeteregistrering']), 
+", Forenklet: ", count(//registrering[@xsi:type='registrering']), 
+", Basis: ", count(//registrering[@xsi:type='basisregistrering']) ), 
+
+"N5.16.01 Reg. (generisk); @@",
+for $registreringtype in distinct-values(//registrering/@xsi:type)
+return
+(concat($registreringtype, ': ', count(//registrering[@xsi:type=$registreringtype]), ", @@" ) ), " ", 
+
+concat('Reg: Uten spesialisering: ', count(//registrering[count(@*)=3]), 
+', Tom journalstatus: ', count(//journalstatus[not(text())]) ), 
+
+concat("N5.21 Registreringer uten dokumentbeskrivelse: ", 
+count(//registrering[not (dokumentbeskrivelse)]), 
+" (registreringsID: ", count(//registrering[not (dokumentbeskrivelse)]/registreringsID), ")" ), " ",
+
+"N5.18 Registreringer pr. år (opprettet dato): ", 
+sort(for $v in distinct-values(//registrering/opprettetDato/substring-before(., "-"))
+return
+(concat($v, ": ", count(index-of(//registrering/opprettetDato/substring-before(., "-"), $v))))),  
+" ", 
+
+"N5.17 Journalposter og type og med/uten hoveddokument: ", 
+concat(' Inngående dokumenter: ', count(//registrering[journalposttype='Inngående dokument'])), 
+concat(' Utgående dokumenter: ', count(//registrering[journalposttype='Utgående dokument'])), 
+concat(' Organinterne dokumenter for oppfølging: ', count(//registrering[journalposttype='Organinternt dokument for oppfølging'])), 
+concat(' Organinterne dokumenter uten oppfølging: ', count(//registrering[journalposttype='Organinternt dokument uten oppfølging'])), 
+concat(' Saksfremlegg: ', count(//registrering[journalposttype='Saksframlegg'])), " ", 
+
+"N5.17.01 Journalposter og type (generisk): ", 
+for $jptype in distinct-values(//registrering/journalposttype)
+return
+concat(" ", $jptype, ': ', count(//registrering[journalposttype=$jptype])), " ", 
+
+concat("N5.22 Journalposter og status; Alle: ",  
+count(//registrering[@xsi:type='journalpost']), "@@" ), 
+concat(", Arkivert: ", count(//registrering[journalstatus='Arkivert']), 
+', Utgår: ', count(//registrering[journalstatus='Utgår']), 
+', Journalført: ', count(//registrering[journalstatus='Journalført']), 
+', Ekspedert: ', count(//registrering[journalstatus='Ekspedert']) ), 
+
+"N5.22.01 Journalposter og status (generisk): @@", 
+for $v in distinct-values(//registrering/journalstatus)
+return
+concat(", ", $v,": ", count(index-of(//registrering/journalstatus, $v)), "@@"), " ", " ", 
+
+"N5.22.02 Journalposter pr. år (journaldato): ", 
+sort(for $v in distinct-values(//registrering/journaldato/substring-before(., "-"))
+return
+(concat($v, ": ", count(index-of(//registrering/journaldato/substring-before(., "-"), $v)))) ), " ", 
+
+"RESERVED: N5.52 Journalregistreringer i loependeJournal", 
+"For now lookup: 'noark5-xpath-report'", " ", 
+
+"RESERVED: N5.53 Journalposter pr. år i løpende journal", 
+"For now lookup: 'noark5-xpath-report'", " ", 
+
+"RESERVED: N5.55 Skjermede journalposter i løpendeJournal", 
+"For now lookup: 'noark5-xpath-report'", " ", 
+
+"RESERVED: N5.56 Journalregistreringer i offentligJournal", 
+"For now lookup: 'noark5-xpath-report'", " ", 
+
+"RESERVED: N5.57 Journalposter pr. år i offentlig journal", 
+"For now lookup: 'noark5-xpath-report'", " ", 
+
+"RESERVED: N5.61 Endringer i endringslogg & pr. år", 
+"For now lookup: 'noark5-xpath-report'", " ", 
+
+concat("N5.23 Dokumentbeskrivelse: ", count(//dokumentbeskrivelse), 
+", Hoveddok: ", count(//registrering/dokumentbeskrivelse[tilknyttetRegistreringSom='Hoveddokument']), 
+", Vedlegg dok: ", count(//registrering/dokumentbeskrivelse[not(tilknyttetRegistreringSom='Hoveddokument')]) ),  
+
+"N5.23.01 Dokbesk(generisk); @@", 
+for $v in distinct-values(//tilknyttetRegistreringSom)
+return
+(concat($v, ": ", count(//tilknyttetRegistreringSom[text() = $v]), ", @@")), " ",
+
+concat("N5.23.02 Dokumentnummer; Alle: ", count(//dokumentbeskrivelse/dokumentnummer) ), 
+concat(", =1 x ", count(//dokumentbeskrivelse/dokumentnummer[text()='1']), 
+", =2 x ", count(//dokumentbeskrivelse/dokumentnummer[text()='2']), 
+", =3 x ", count(//dokumentbeskrivelse/dokumentnummer[text()='3']), 
+", >= 4 x ", count(//dokumentbeskrivelse/dokumentnummer[ number(text()) ge 4]), 
+", >= 100 x ", count(//dokumentbeskrivelse/dokumentnummer[ number(text()) ge 100]) ), 
+ 
+concat("N5.23.03 Versjonsnummer; Alle: ", count(//dokumentobjekt/versjonsnummer) ), 
+concat(", =1 x ", count(//dokumentobjekt/versjonsnummer[text()='1']), 
+", =2 x ", count(//dokumentobjekt/versjonsnummer[text()='2']), 
+", =3 x ", count(//dokumentobjekt/versjonsnummer[text()='3']), 
+", =4 x ", count(//dokumentobjekt/versjonsnummer[text()='4']), 
+", =5 x ", count(//dokumentobjekt/versjonsnummer[text()='5']), 
+", =6 x ", count(//dokumentobjekt/versjonsnummer[text()='6']), 
+", =7 x ", count(//dokumentobjekt/versjonsnummer[text()='7']), 
+", =8 x ", count(//dokumentobjekt/versjonsnummer[text()='8']), 
+", =9 x ", count(//dokumentobjekt/versjonsnummer[text()='9']), 
+", >= 10 x ", count(//dokumentobjekt/versjonsnummer[ number(text()) ge 10]) ), " ", 
+
+concat("N5.24 Dokumentbeskrivelser uten dokumentobjekt: ", count(//dokumentbeskrivelse[not(dokumentobjekt)]) ), 
+
+concat("N5.25 Dokumentstatus; ", 
+'Ferdigstilt: ', count(//dokumentbeskrivelse[dokumentstatus='Dokumentet er ferdigstilt']),
+', Under redigering: ', count(//dokumentbeskrivelse[dokumentstatus='Dokumentet er under redigering']),
+', Annen status: ', count(//dokumentbeskrivelse[not(dokumentstatus='Dokumentet er ferdigstilt')][not(dokumentstatus='Dokumentet er under redigering')]), " @@"), " ", 
+
+"N5.25 Dokumentstatus (generisk); @@", 
+for $dokstat in distinct-values(//dokumentbeskrivelse/dokumentstatus)
+return
+concat($dokstat, ': ', count(//dokumentstatus[text()=$dokstat]) ), 
+
+concat("N5.26.02 Dokumentmedium: ", count(//dokumentbeskrivelse/dokumentmedium), ", @@"), 
+for $format in distinct-values(//dokumentbeskrivelse/dokumentmedium)
+return
+concat($format, ": ", count(//dokumentbeskrivelse/dokumentmedium[text() = $format]), ", @@"), " ", 
+
+concat("N5.26.01 Dokumentobjekt: ", count(//dokumentobjekt), ", @@"), 
+for $format in distinct-values(//variantformat)
+return
+concat($format, ": ", count(//variantformat[text() = $format]), ", @@"), " ", " ", 
+
+
+concat("N5.39 Korrespondanseparter: ", count(//korrespondansepart), " @@" ), 
+for $partparent in distinct-values(//korrespondansepart/../name())
+return
+concat(", ", $partparent, ": ", count(//*[name() = $partparent]//korrespondansepart), " @@"), " ", 
+
+concat("N5.35_v3.0_v4.0 Saksparter (Noark 5 v3.1/4.0): ", count(//sakspart) ), 
+
+concat("N5.35_v5.0 Parter (Noark 5 v5.0): ", count(//part), 
+", Mappe: ", count(//mappe/part), 
+", Registrering: ", count(//registrering/part), 
+", Dokbeskr: ", count(//dokumentbeskrivelse/part)), " ", 
+
+concat("N5.36 Merknader: ", count(//merknad), 
+", Mappe: ", count(//mappe/merknad), 
+", Registrering: ", count(//registrering/merknad), 
+", Dokbeskr: ", count(//dokumentbeskrivelse/merknad) ), 
+
+concat("N5.37 Kryssreferanser: ", count(//kryssreferanse/*), 
+", Klasse: ", count(//klasse/kryssreferanse/*), 
+", Mappe: ", count(//mappe/kryssreferanse/*), 
+", Registrering: ", count(//registrering/kryssreferanse/*) ), 
+
+concat("N5.38 Presedenser: ", count(//presedens), 
+", Mappe: ", count(//mappe/presedens), 
+", Journalpost: ", count(//registrering[@xsi:type='journalpost']/presedens) ), " ", 
+
+concat("N5.40 Avskrivninger: ",  count(//registrering[@xsi:type='journalpost']/avskrivning[string-length(avskrivningsmaate)>0]/avskrivningsmaate) ), 
+concat('Avskrevet av andre journalposter: ', count(//registrering[@xsi:type='journalpost']/avskrivning[string-length(referanseAvskrivesAvJournalpost)>0]/referanseAvskrivesAvJournalpost)), " ", 
+
+concat("N5.40.01 Avskrivninger (faste verdier): ", count(//avskrivningsmaate) ), 
+concat("Besvart med brev: ", count(//avskrivningsmaate[text()="Besvart med brev"])), 
+concat("Besvart med e-post: ", count(//avskrivningsmaate[text()="Besvart med e-post"])), 
+concat("Besvart på telefon: ", count(//avskrivningsmaate[text()="Besvart på telefon"])), 
+concat("Tatt til etterretning: ", count(//avskrivningsmaate[text()="Tatt til etterretning"])), 
+concat("Tatt til orientering: ", count(//avskrivningsmaate[text()="Tatt til orientering"])), 
+concat("Besvart med notat: ", count(//avskrivningsmaate[text()="Besvart med notat"])), 
+concat("Saken ble avsluttet: ", count(//avskrivningsmaate[text()="Saken ble avsluttet"])), " ",
+
+concat("N5.40.02 Avskrivninger (generisk): ", count(//avskrivningsmaate), " @@" ), 
+for $format in distinct-values(//avskrivningsmaate)
+return
+concat($format, ": ", count(//avskrivningsmaate[text() = $format]), " @@"), " ", " ", 
+
+concat("N5.41 Dokumentflyter: ", count(//registrering/dokumentflyt), 
+", Journalpost: ", count(//registrering[@xsi:type='journalpost'][dokumentflyt]), 
+", Arkivnotat: ", count(//registrering[@xsi:type='arkivnotat']/dokumentflyt) ), " ", 
+
+concat("N5.42 Skjerminger: ", count(//skjerming) ), 
+concat('Arkivdel: ', count(//arkivdel/skjerming)), 
+concat('Klasser: ', count(//klasse/skjerming)), 
+concat('Mapper: ', count(//mappe/skjerming)), 
+concat('Registreringer: ', count(//registrering/skjerming)), 
+concat('Dokumentbeskrivelse: ', count(//dokumentbeskrivelse/skjerming)), " ",
+
+concat("N5.43_v3.1_v4.0 Graderinger Noark 5 v3.1/4.0: ", count(//gradering) ), 
+concat('Arkivdel: ', count(//arkivdel/gradering)), 
+concat('Klasse: ', count(//klasse/gradering)), 
+concat('Mappe: ', count(//mappe/gradering)), 
+concat('Registrering: ', count(//registrering/gradering)), 
+concat('Dokumentbeskrivelse: ', count(//dokumentbeskrivelse/gradering)), " ", 
+
+concat("N5.43.01_v5.0 Graderinger (Noark 5 v5.0): ", count(//grad) ), 
+concat('Arkivdel: ', count(//arkivdel/grad)), 
+concat('Klasse: ', count(//klasse/grad)), 
+concat('Mappe: ', count(//mappe/grad)), 
+concat('Registrering: ', count(//registrering/grad)), 
+concat('Dokumentbeskrivelse: ', count(//dokumentbeskrivelse/grad)), " ", 
+
+concat("N5.44 Kassasjonsvedtak: ", count(//kassasjon) ), 
+concat('Arkivdel: ', count(//arkivdel/kassasjon)), 
+concat('Klasse: ', count(//klasse/kassasjon)), 
+concat('Mappe: ', count(//mappe/kassasjon)), 
+concat('Registrering: ', count(//registrering/kassasjon)), 
+concat('Dokumentbeskrivelse: ', count(//dokumentbeskrivelse/kassasjon)), " ", 
+
+concat("N5.45 Utførte kassasjoner: ", count(//dokumentbeskrivelse/utfoertKassasjon) ), 
+
+concat("Utførte slettinger utenom kassasjon: ", count(//sletting) ), 
+concat("N5.47 Sletting utenom kassasjon: ", count(//sletting), ", @@"), 
+for $format in distinct-values(//slettingstype)
+return
+concat($format, ": ", count(//slettingstype[text() = $format]), ", @@"), " ", " ",  
+
+concat("N5.65_v5.0 Virksomhetsspesifikke metadata; Alle: ", count(//virksomhetsspesifikkeMetadata)), 
+concat("Mappe: ", count(//mappe/virksomhetsspesifikkeMetadata), 
+", Registrering: ", count(//registrering/virksomhetsspesifikkeMetadata), 
+", Dokubeskr: ", count(//dokumentbeskrivelse/virksomhetsspesifikkeMetadata), 
+", Part: ", count(//part/virksomhetsspesifikkeMetadata) ), " ", 
+
+
+"N5.26.03 Dokumentstørrelser", 
+concat(", ", count(//filstoerrelse[ text()='0' ]), " x =0"),
+concat(", ", count(//filstoerrelse[ number(text()) gt 0 and number(text()) lt 10 ]), " x =1-9"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 10 and number(text()) lt 100 ]), " x =10-99"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 100 and number(text()) lt 200 ]), " x =100-199"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 200 and number(text()) lt 500 ]), " x =200-499"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 500 and number(text()) lt 1000 ]), " x =500-999"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 1000 and number(text()) lt 2000 ]), " x =1000-1999"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 2000 and number(text()) lt 10000 ]), " x =2000-9999"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 10000 and number(text()) lt 100000 ]), " x =10k-100k"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 100000 and number(text()) lt 1000000 ]), " x =100k-1M"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 1000000 and number(text()) lt 10000000 ]), " x =1M-10M"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 10000000 and number(text()) lt 100000000 ]), " x =10M-100M"), 
+concat(", ", count(//filstoerrelse[ number(text()) ge 100000000 ]), " x >= 100M"), " ", 
+concat(", Snitt: ", format-number(round(avg(//filstoerrelse)), "#,###,###") ), 
+concat(", Max: ", format-number(max(//filstoerrelse), "#,###,###") ), 
+concat(", Sum: ", format-number(round(sum(//filstoerrelse)), "#,###,###") ), " ", 
+
+concat("N5.23.05 Format; Alle: ", count(//dokumentobjekt/format) ), 
+for $v in distinct-values(//dokumentobjekt/format)
+return
+(concat(", ", $v,": ", count(index-of(//dokumentobjekt/format, $v)))), " ", 
+
+concat("N5.23.06 Formatdetaljer; Alle: ", count(//dokumentobjekt/formatDetaljer) ), 
+for $v in distinct-values(//dokumentobjekt/formatDetaljer)
+return
+(concat(", ", $v,": ", count(index-of(//dokumentobjekt/formatDetaljer, $v)))), " ", 
+
+concat("N5.46 Konverterte dokumenter: ", count(descendant::konvertering) ), 
+
+concat("N5.46.01 Konvertering; Alle: ", count(//dokumentobjekt/konvertering) ), 
+
+concat("N5.46.02 Konvertert fraformat: Alle: ", count(//dokumentobjekt/konvertering/konvertertFraFormat) ), 
+for $v in distinct-values(//dokumentobjekt/konvertering/konvertertFraFormat)
+return
+(concat(", ", count(index-of(//dokumentobjekt/konvertering/konvertertFraFormat, $v)), " x ", $v)), " ",  
+
+concat("N5.46.03 Konvertert tilformat; Alle: ", count(//dokumentobjekt/konvertering/konvertertTilFormat) ), 
+for $v in distinct-values(//dokumentobjekt/konvertering/konvertertTilFormat)
+return
+(concat(", ", count(index-of(//dokumentobjekt/konvertering/konvertertTilFormat, $v)), " x ", $v)), " ",  
+
+concat("N5.46.04 Konverteringsverktøy; Alle: ", count(//dokumentobjekt/konvertering/konverteringsverktoey) ), 
+for $v in distinct-values(//dokumentobjekt/konvertering/konverteringsverktoey)
+return
+(concat(", ", count(index-of(//dokumentobjekt/konvertering/konverteringsverktoey, $v)), " x ", $v)), " " , 
+
+"N5.23.10 Dokumenttype (generisk); ", 
+for $doktype in distinct-values(//dokumenttype)
+return
+(concat(", ", $doktype, ": ", count(//dokumenttype[text() = $doktype]), ", "))
+#STOP#

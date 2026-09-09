@@ -1,0 +1,104 @@
+_PARAMETERS_
+query_name=Noark 5 Additional queries - SSIKT ephorte arkivdel, rev1
+query_date=2022-09-21
+query_description=Kjører manuelt aktiverte job_enabled <> 0 Noark 5-queries [QA må gjøres mot xsd skjemaer Noark 5 v3.1, 4.0 & 5.0]
+
+query_type=Noark5
+query_subtype=3.1,4.0,5.0
+query_version=0.2
+
+tool_name=XML Queries
+tool_version=0.6
+tool_info=[Standard rapportnavn resultat: "kdrs_query_results_uttrekk.txt". Seksjoner: XML_QUERY og SQL_QUERY. Parameter job_enabled = 0 Kjøres ikke, = 1 Inkluderes i rapport hvis feltet aktivert i rapport, =2 Ikke inkludert i rapport, =3 Inkludert i rapport, men lagret til egen fil (postfix filnavn job_id).]
+
+[XML_QUERY]
+
+job_id=U02
+job_enabled=1 
+job_name=Konsentrert opptelling pr. arkivdel for hele Noark 5-uttrekket
+job_description=N5.102 Arkivdeler info pr. arkivdel (utvidet) [3] Til egen fil
+
+system=noark5 
+subsystem=
+source=arkivstruktur.xml 
+target=noark5_analyse_{dt}.log
+
+#START# 
+"U2. N5.102 Konsentrert opptelling pr. arkivdel for hele Noark 5-uttrekket", " ", 
+
+//arkivdel/(concat("Arkivdel ", position(), ": " , tittel),
+concat("Beskrivelse: ", beskrivelse/text() ), 
+concat("Status: ", arkivdelstatus/text(), " ", arkivperiodeStartDato, " - ", arkivperiodeSluttDato, 
+", Opprettet/Avsluttet: ", substring(opprettetDato/text(), 0, 11), " - ", substring(avsluttetDato/text(), 0, 11) ),
+
+concat("Mappe; Opprettet første/Avsluttet siste: ",
+substring(string(min(descendant::mappe/opprettetDato/xs:dateTime(.))), 0, 11), 
+" - ", substring(string(max(descendant::mappe/avsluttetDato/xs:dateTime(.)) ), 0, 11) ), 
+
+concat("Registrering; Arkivert første/Arkivert siste: ", substring(string(min(descendant::registrering/arkivertDato/xs:dateTime(.))), 0, 11), 
+" - ", substring(string(max(descendant::registrering/arkivertDato/xs:dateTime(.))), 0, 11) ), 
+
+concat("Dokument opprettet; Første/Siste: ", substring(string(min(descendant::dokumentbeskrivelse/opprettetDato/xs:dateTime(.))), 0, 11), 
+" - ", substring(string(max(descendant::dokumentbeskrivelse/opprettetDato/xs:dateTime(.))), 0, 11) ), 
+
+concat("[.1] ", dokumentmedium/text(), ", Klassifikasjonssystemer: ", count(descendant::klassifikasjonssystem), ", Klasser: ", count(descendant::klasse)), 
+
+concat("[.2] Mappe typer: @@", ", Alle: ", count(descendant::mappe), " @@"), 
+for $mappetype in distinct-values(descendant::mappe/@xsi:type)
+return
+(concat($mappetype, ": ", count(descendant::mappe[@xsi:type=$mappetype]), 
+", Uten spesialisering: ", count(descendant::mappe[count(@*)=3]), 
+", Uten reg: ", count(descendant::mappe[not (mappe or registrering)]) ), "; @@" ), 
+
+concat("Mappe, sak status; Avsluttet: ", count(descendant::mappe[saksstatus='Avsluttet']),
+", Utgår: ", count(descendant::mappe[saksstatus='Utgår']), 
+", Under beh: ", count(descendant::mappe[sakstatus='Underbehandling']), 
+", Alle møte: ", count(descendant::mappe[@xsi:type='moetemappe']), 
+", Avslutt møte: ", count(descendant::mappe[@xsi:type='moetemappe'][string-length (avsluttetDato/text()) > 0]) ),
+
+concat("[.3] Registreringer; Alle: ", count(descendant::registrering),
+", Journalpost: ", count(descendant::registrering[@xsi:type='journalpost']), 
+", Møte : ", count(descendant::registrering[@xsi:type='moeteregistrering']), 
+", uten dokbesk: ", count(descendant::registrering[not (dokumentbeskrivelse)]/registreringsID)), 
+for $jptype in distinct-values(descendant::registrering/journalposttype/text())
+return
+(concat(", ", $jptype, ': ', count(descendant::registrering[journalposttype/text()=$jptype]), "@@")), " ", 
+
+concat("@@ Journalpost; Arkivert: ", count(descendant::registrering[journalstatus='Arkivert']),
+", Journalført: ", count(descendant::registrering[journalstatus='Journalført']), 
+", Utgår: ", count(descendant::registrering[journalstatus='Utgår']), 
+", Godkjent av leder: ", count(descendant::registrering[journalstatus='Godkjent av leder']), 
+", Ferdigstilt fra saksbehandler: ", count(descendant::registrering[journalstatus='Ferdigstilt fra saksbehandler']), 
+", Ekspedert: ", count(descendant::registrering[journalstatus='Utgår']) ), 
+
+concat("[.4] Dokumentbeskrivelse; Alle: ", count(descendant::dokumentbeskrivelse),
+", Hoveddok: ", count(descendant::dokumentbeskrivelse[tilknyttetRegistreringSom='Hoveddokument']), 
+", Vedlegg: ", count(descendant::dokumentbeskrivelse[not(tilknyttetRegistreringSom='Hoveddokument')]) ), 
+
+concat("Dokumentstatus: ", 
+", Ferdigstilt: ", count(descendant::registrering/dokumentbeskrivelse[dokumentstatus='Dokumentet er ferdigstilt']), 
+", Under redigering: ", count(descendant::registrering/dokumentbeskrivelse[dokumentstatus='Dokumentet er under redigering']), 
+", Uten dokumentobjekt: ", count(descendant::dokumentbeskrivelse[not(dokumentobjekt)]) ), 
+
+concat("Dokumentmedium; Elektronisk arkiv: ", count(descendant::dokumentbeskrivelse[dokumentmedium='Elektronisk arkiv']), 
+", Fysisk arkiv: ", count(descendant::dokumentbeskrivelse[dokumentmedium='Fysisk arkiv']) ),  
+
+concat("Dokumentobjekt; Alle: ", count(descendant::dokumentobjekt), 
+", Arkivformat: ", count(descendant::dokumentobjekt[variantformat='Arkivformat']), 
+", Produksjonsformat: ", count(descendant::dokumentobjekt[variantformat='Produksjonsformat']) ), 
+
+concat("[.5] Korrespondansepart: ", count(descendant::korrespondansepart), 
+", Sakspart: ", count(descendant::sakspart), 
+", Part: ", count(descendant::part),  
+", Mappe: ", count(descendant::mappe/part), 
+", Registrering: ", count(descendant::registrering/part), 
+", Dokbeskr: ", count(descendant::dokumentbeskrivelse/part) ), 
+
+concat("Avskrivning: ", count(descendant::avskrivningsmaate), 
+", Skjerming: ", count(descendant::skjerming), 
+", Kassasjonsvedtak: ", count(descendant::kassasjon), 
+", Utført kassasjon: ", count(descendant::utfoertKassasjon), 
+", Sletting: ", count(descendant::sletting) ), 
+" "
+)
+#STOP#
